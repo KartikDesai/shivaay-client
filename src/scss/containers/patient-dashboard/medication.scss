@@ -1,0 +1,11 @@
+.medication {
+  & .add-medication-icon {
+    font-size: 26px;
+    font-weight: 700;
+    color: #096dd9;
+  }
+
+  & .add-button {
+    margin-top: 18px;
+  }
+}

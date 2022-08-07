@@ -1,0 +1,69 @@
+@font-face {
+  font-family: 'MuktaVaani';
+  src: local('MuktaVaani'), url('../shared/fonts/gujarati/MuktaVaani-Regular.ttf') format('truetype');
+}
+
+.gj-fnt-14 {
+  font-family: 'MuktaVaani';
+  font-size: 14px;
+}
+
+.nopadding {
+  padding: 0;
+}
+.nopadleft { padding-left: 0!important; }
+.nomarleft { padding-margin: 0!important; }
+.nopadright { padding-right: 0!important; }
+.nopadtop { padding-top: 0!important; }
+.nopadbottom { padding-bottom: 0!important; }
+.nomargin {
+  margin: 0;
+}
+
+.close {
+  & .lnr {
+    font-size: 16px;
+    &:hover {
+      font-weight: bold;
+      color: red;
+    }
+  }
+}
+
+.popover {
+  z-index: 1100; // more than modal popup
+  & .popover-header{
+    font-size: 13px;
+    background: white;
+    border-bottom: 1px solid #faad14;
+    & .lnr-warning {
+      color: #faad14;
+      font-weight: bold;
+      font-size: 14px;
+    }
+  }
+  & .popover-body{
+    font-size: 12px;
+    & .btn {
+      padding: 0 5px;
+      &:hover {
+      }
+    }
+  }
+
+  & .arrow {
+    display: none; // TODO: Fix this temporary patch to hide popover arrow
+  }
+}
+
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+.uppercase {
+  text-transform: uppercase;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #f0f0f0;
+}
