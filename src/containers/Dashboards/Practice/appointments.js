@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { Table } from 'antd';
-import {Button, Col, Container, Modal, Row} from "reactstrap";
+import {Form, Input, List, Table} from 'antd';
+import {Button, Col, Container, Modal, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
 import classNames from "classnames";
 import AppointmentAndRegistration from "../../Lookups/appointmentAndRegistration";
 import axios from "../../../shared/axiosConfig";
@@ -8,6 +8,10 @@ import {connect} from "react-redux";
 import withErrorHandler from "../../../shared/components/withErrorHandler";
 import {Link} from "react-router-dom";
 import notify from "../../../shared/components/notification/notification";
+import classnames from "classnames";
+import ChiefComplaint from "./chiefComplaints";
+import {GujWords} from "../../../translations/resources";
+import Medication from "./medications";
 
 
 const columns = [
@@ -28,6 +32,7 @@ const appointments = props => {
     const [chiefComplaints, setChiefComplaints] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [encs, setEncs] = useState([]);
+    const [activeTab, setActiveTab] = useState(1);
     
     const {theme} = props;
     const toggle = () => {
@@ -39,54 +44,21 @@ const appointments = props => {
         [theme.className]: true
     });
 
-
-
-    const showResults = values => {
-        console.log(values);
-        const apptData = {
-            "encData": {
-                "chiefcomplaints": values.chiefcomplaint && values.chiefcomplaint.length > 0 ? values.chiefcomplaint.join('\n') : '',
-                "doctorId": values.concerneddoctor,
-                "refby": values.refby
-
-            },
-            "patient": {
-                "id": values.id && values.id > 0 ? values.id : -1,
-                "fname": values.fname,
-                "lname": values.lname,
-                "age": values.age,
-                "sex": values.sex === "M" ? "M" : "F",
-                "phone": values.phone,
-                "address": values.address1
-            }
-        }
-
-        axios.post('createEncounter', apptData)
-            .then(res => {
-                setModal(false);
-                getEncounters();
-            })
-            
-    }
-
-    const modelClose =()=>
-    {
+    const modelClose =()=> {
         setModal(false);
+        getEncounters(activeTab);
     }
 
-    const getEncounters = async () => {
-        const res = await axios.get(`/getEncs/${props.user.userInfo.id}`);
+    const getEncounters = async (tab) => {
+        const res = await axios.get(`/getEncs/${tab}/${props.user.userInfo.id}`);
         if (res) { setEncs(res.data); }
     }
 
     useEffect( ()=>{
-        console.log(props.user.userInfo);
-        if (props.user.userInfo.id && props.user.userInfo.id > 0) {
-            getEncounters();
-        } else {
-            notify('e', 'Something went wrong while fetching appointments. Please try again.');
+        if (props.user.userInfo && props.user.userInfo.id && props.user.userInfo.id > 0) {
+            getEncounters('all');
         }
-    }, [])
+    }, [props.user])
 
     useEffect(() => {
         axios.get('/chiefComplaint/getKeywords')
@@ -106,37 +78,129 @@ const appointments = props => {
             .catch(err => {
                 console.log("Error while fetching doctors.");
             });
+        setActiveTab('all');
     }, [])
-    
+
+    const toggleTab = (tab) => {
+        if (activeTab !== tab) {
+            setActiveTab(tab);
+            getEncounters(tab);
+        }
+    };
+
     return (
         <>
-            <Container>
-                <Row>
-                    <Col md={12} lg={12} md={12} className="flex flex-row-reverse mb-4">
-                        <Button color="primary" onClick={toggle}>Add Appointment</Button>
-                    </Col>
-                    <Col md={12} lg={12} md={12}>
-                        <Table
-                            columns={columns}
-                           /* expandable={{
-                                expandedRowRender: record => <p style={{ margin: 0 }}>{record.description}</p>,
-                                rowExpandable: record => record.name !== 'Not Expandable',
-                            }}*/
-                            dataSource={encs.map((enc, i) => (
-                                {
-                                    key: i,
-                                    name: `${enc.fname} ${enc.lname}`,
-                                    age: enc.age,
-                                    address: enc.address1,
-                                    chiefComplaint: enc.chiefComplaint,
-                                    patientId: enc.patientId,
-                                    encId: enc.encId
-                                }
-                            ))}
-                        />
-                    </Col>
-                </Row>
-            </Container>
+
+            <div className="tabs tabs--justify tabs--bordered-top">
+                <div className="tabs__wrap">
+                    <div className="col-sm-12 flex flex-row-reverse">
+                        <Nav tabs className="dashboard-navs">
+                            <NavItem>
+                                <NavLink
+                                    className={classnames({active: activeTab === 'my'})}
+                                    onClick={() => {
+                                        toggleTab('my');
+                                    }}
+                                >
+                                    My
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink
+                                    className={classnames({active: activeTab === 'all'})}
+                                    onClick={() => {
+                                        toggleTab('all');
+                                    }}
+                                >
+                                    All
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink
+                                    className={classnames({active: activeTab === 'past'})}
+                                    onClick={() => {
+                                        toggleTab('past');
+                                    }}
+                                >
+                                    Completed
+                                </NavLink>
+                            </NavItem>
+                        </Nav>
+                    </div>
+                    <TabContent activeTab={activeTab}>
+                        <TabPane tabId='my' className="p-3">
+                            <Container>
+                                <Row>
+                                    <Col md={12} lg={12} md={12}>
+                                        <Table
+                                            columns={columns}
+                                            dataSource={encs.map((enc, i) => (
+                                                {
+                                                    key: i,
+                                                    name: `${enc.fname} ${enc.lname}`,
+                                                    age: enc.age,
+                                                    address: enc.address1,
+                                                    chiefComplaint: enc.chiefComplaint,
+                                                    patientId: enc.patientId,
+                                                    encId: enc.encId
+                                                }
+                                            ))}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Container>
+                        </TabPane>
+                        <TabPane tabId='all' className="p-3">
+                            <Container>
+                                <Row>
+                                    <Col md={12} lg={12} md={12} className="flex flex-row-reverse mb-4">
+                                        <Button color="primary" onClick={toggle}>Add Appointment</Button>
+                                    </Col>
+                                    <Col md={12} lg={12} md={12}>
+                                        <Table
+                                            columns={columns}
+                                            dataSource={encs.map((enc, i) => (
+                                                {
+                                                    key: i,
+                                                    name: `${enc.fname} ${enc.lname}`,
+                                                    age: enc.age,
+                                                    address: enc.address1,
+                                                    chiefComplaint: enc.chiefComplaint,
+                                                    patientId: enc.patientId,
+                                                    encId: enc.encId
+                                                }
+                                            ))}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Container>
+                        </TabPane>
+                        <TabPane tabId='past' className="p-3">
+                            <Container>
+                                <Row>
+                                    <Col md={12} lg={12} md={12}>
+                                        <Table
+                                            columns={columns}
+                                            dataSource={encs.map((enc, i) => (
+                                                {
+                                                    key: i,
+                                                    name: `${enc.fname} ${enc.lname}`,
+                                                    age: enc.age,
+                                                    address: enc.address1,
+                                                    chiefComplaint: enc.chiefComplaint,
+                                                    patientId: enc.patientId,
+                                                    encId: enc.encId
+                                                }
+                                            ))}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Container>
+                        </TabPane>
+                    </TabContent>
+                </div>
+            </div>
+
             <Modal
                 backdrop="static"
                 keyboard={false}                
@@ -145,7 +209,6 @@ const appointments = props => {
                 className={modalClasses}
             >
                 <AppointmentAndRegistration
-                    onSubmit={showResults}
                     chiefComplaints={chiefComplaints}
                     doctors={ doctors }
                     modelClose = {modelClose}

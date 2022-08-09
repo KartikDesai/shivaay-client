@@ -8,12 +8,13 @@ import useFocus from "../../shared/hooks/use-focus-hook";
 
 const { Option } = Select;
 
-const AppointmentAndRegistration = ({ modelClose, onSubmit, reset, t, chiefComplaints, doctors}) => {
+const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => {
     const [searchPatientQuery, setSearchPatientQuery] = useState();
     const [patients, setPatients] = useState([]);
     const [initialValue, setInitialValue] = useState({"sex": "M"});
     const [appointmentForm] = Form.useForm();
     const [fnameRef, setFnameFocus] = useFocus();
+    const [savingAppointment, setSavingAppointment] = useState(false);
 
     /*const config = {
         rules: [
@@ -31,6 +32,33 @@ const AppointmentAndRegistration = ({ modelClose, onSubmit, reset, t, chiefCompl
             if(res){ setPatients(res.data); }
         } else {
             setPatients([]);
+        }
+    }
+
+    const createEnc = async values => {
+        setSavingAppointment(true);
+        const encData = {
+            "encData": {
+                "chiefcomplaints": values.chiefcomplaint && values.chiefcomplaint.length > 0 ? values.chiefcomplaint.join('\n') : '',
+                "doctorId": values.concerneddoctor,
+                "refby": values.refby
+
+            },
+            "patient": {
+                "id": values.id && values.id > 0 ? values.id : -1,
+                "fname": values.fname,
+                "lname": values.lname,
+                "age": values.age,
+                "sex": values.sex === "M" ? "M" : "F",
+                "phone": values.phone,
+                "address": values.address1
+            }
+        }
+
+        const res = await axios.post('createEncounter', encData);
+        setSavingAppointment(false);
+        if (res) {
+            modelClose();
         }
     }
 
@@ -58,7 +86,7 @@ const AppointmentAndRegistration = ({ modelClose, onSubmit, reset, t, chiefCompl
                 <Col md={12} lg={12} className="nopadding">
                 <Card>
                     <CardBody>
-                        <Form form={appointmentForm} name="appointment-registration" onFinish={onSubmit} initialValues={initialValue}
+                        <Form form={appointmentForm} name="appointment-registration" onFinish={createEnc} initialValues={initialValue}
                               className="form">
                             <div className="form__half">
                                 <Form.Item name="id">
@@ -166,7 +194,7 @@ const AppointmentAndRegistration = ({ modelClose, onSubmit, reset, t, chiefCompl
                                             <Select
                                                 mode="multiple"
                                                 style={{width: '100%'}}
-                                                placeholder="select one country"
+                                                placeholder="Select Chief Complaint"
                                                 optionLabelProp="label"
                                             >
                                                 {chiefComplaints.map((chiefComplaint, index) => {
@@ -230,7 +258,7 @@ const AppointmentAndRegistration = ({ modelClose, onSubmit, reset, t, chiefCompl
             </Col>
             </ModalBody>
             <ModalFooter>
-                <Button form="appointment-registration" type="submit"  color="primary">
+                <Button form="appointment-registration" type="submit"  color="primary" disabled={savingAppointment}>
                     OK
                 </Button>
                 <Button color="secondary"  onClick = {modelClose}>

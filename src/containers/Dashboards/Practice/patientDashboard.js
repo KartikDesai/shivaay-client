@@ -5,8 +5,10 @@ import {Col, Container, Row, Card, CardBody} from "reactstrap";
 import DashboardTabs from '../Practice/dashboardTabs'
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
+import {Spin} from "antd";
 const patientDashboard = props => {
     const [patient, setPatient] = useState({});
+    const [markingCompleted, setMarkingCompleted] = useState(false);
     const { encId, patientId } = props.match.params;
     const getPatient = async (patientId, encId) => {
         const res = await axios.get(`patientDashboard/${patientId}/${encId}` );
@@ -25,12 +27,21 @@ const patientDashboard = props => {
         content: () => componentRef.current
     });
 
+    const markCompleteHandler = async (encId) => {
+        setMarkingCompleted(true);
+        const res = await axios.post(`markEncComplete/${encId}`);
+        if (res) {
+            setMarkingCompleted(false);
+            props.history.push("/appointments");
+        }
+    }
+
     return(
         <div className="patient-dashboard"  ref={componentRef}>
             <Container className="dashboard">
                 <Row>
                     <Col md={12}>
-                        <h3 className="mb-3 patient-dashboard-header">Patient Dashboard</h3>
+                        <h3 className="mb-2 patient-dashboard-header">Patient Dashboard</h3>
                         <Col md={12} lg={12} xl={12} className="nopadding mb-2">
                             <Card>
                                 <CardBody className="profile__card">
@@ -42,7 +53,7 @@ const patientDashboard = props => {
                                                 <div className="">
                                                     <div className="patient-detail-matrix">
                                                         <div className="patient-detail-matrix-label"><strong>Date</strong></div>
-                                                        { moment(patient.datetime).format("DD/MM/YYYY") }
+                                                        { moment(patient.starttime).format("DD/MM/YYYY") }
                                                     </div>
                                                 </div>
                                                 <div className="">
@@ -81,13 +92,21 @@ const patientDashboard = props => {
                             </CardBody>
                         </Card>
                     </Col>
-                    <Col md={12}>
+                    <Col md={12} className="footer-buttons">
                         <button
                             type="button"
-                            className="btn btn-xs btn-primary footer-print-button"
+                            className="btn btn-xs btn-primary"
                             onClick={handlePrint}
                         >
                             Print
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-xs btn-primary"
+                            onClick={() => markCompleteHandler(encId)}
+                            disabled={markingCompleted}
+                        >
+                            { markingCompleted ? <Spin size="small" /> : 'Mark Complete' }
                         </button>
                     </Col>
                 </Row>

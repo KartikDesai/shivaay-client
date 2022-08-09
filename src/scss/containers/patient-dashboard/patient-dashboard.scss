@@ -9,7 +9,7 @@
     flex-grow: 1;
     max-width: 100%;
   }
-  & .footer-print-button {
+  & .footer-buttons {
     position: fixed;
     bottom: 10px;
   }
@@ -59,7 +59,7 @@
     & .patient-dashboard-header {
       display: none!important;
     }
-    & .footer-print-button {
+    & .footer-buttons {
       display: none!important;
     }
     & .patient-detail-more{

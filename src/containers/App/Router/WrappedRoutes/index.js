@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import Layout from '../../../Layout/index';
-import DefaultDashboard from '../../../Dashboards/Practice/index';
 import Appointments from '../../../Dashboards/Practice/appointments'
 import PatientDashboard from '../../../Dashboards/Practice/patientDashboard';
 import {authCheckState} from "../../../../redux/actions/auth";
@@ -15,7 +14,7 @@ const WrappedRoutes = props => {
         if (!props.isAuthenticated) {
             authReditect = <Redirect to="/login" />
         }
-    });
+    }, []);
     return (
         <div>
             { authReditect }

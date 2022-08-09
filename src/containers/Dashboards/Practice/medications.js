@@ -9,10 +9,9 @@ import {
     ModalBody,
     ModalFooter,
     ModalHeader,
-    Table,
-    ButtonToolbar, Popover, PopoverHeader, PopoverBody
+    Table
 } from 'reactstrap';
-import {Form, Input, Select} from "antd";
+import {Form, Input, Select, Spin} from "antd";
 import classNames from "classnames";
 import axios from '../../../shared/axiosConfig'
 import withErrorHandler from "../../../shared/components/withErrorHandler";
@@ -20,6 +19,7 @@ import { GujWords } from '../../../translations/resources'
 import useFocus from '../../../shared/hooks/use-focus-hook'
 import useCtrlEnter from "../../../shared/hooks/ctrl-enter-hook";
 import DSelect from "../../../shared/components/form/DSelect";
+import notify from "../../../shared/components/notification/notification";
 
 const { Option } = Select;
 
@@ -28,6 +28,8 @@ const Medication = ({ onSubmit, onClose, encId }) => {
     const [freqCodes, setFreqCodes] = useState([]);
     const [drugs, setDrugs] = useState([]);
     const [query, setQuery] = useState();
+    const [addingDrug, setAddingDrug] = useState(false);
+    const [savingMedications, setSavingMedications] = useState(false);
     const [medications, setMedications] = useState([]);
     const [brandNameRef, setBrandNameFocus] = useFocus()
     const [form] = Form.useForm();
@@ -48,13 +50,16 @@ const Medication = ({ onSubmit, onClose, encId }) => {
     }
 
     const saveMedication = async () => {
+        setSavingMedications(true);
         const res = await axios.post('medication/save', { encId: encId, medications: medications });
-        if (res.data) {
+        setSavingMedications(false);
+        if (res && res.data) {
             form.resetFields();
             onClose();
         }
     };
     const onReset = () => {
+        setAddingDrug(false);
         form.resetFields();
     };
 
@@ -76,7 +81,12 @@ const Medication = ({ onSubmit, onClose, encId }) => {
     const fetchDrugs = async (query) => {
         if (query) {
             const res = await axios.get(`/getDrugs/${query}`);
-            if(res){ setDrugs(res.data); }
+            if(res){
+                if (res.data.length === 0) {
+                    res.data.push({"brandName": `${query}`, isNew: true, id: -1 * Math.random() });
+                }
+                setDrugs(res.data);
+            }
         } else {
             setDrugs([]);
         }
@@ -91,7 +101,7 @@ const Medication = ({ onSubmit, onClose, encId }) => {
 
     const getMedications = async (encId) => {
         const res = await axios.get(`medication/get/${encId}` );
-        if (res) {
+        if (res && res.data) {
             setMedications(res.data);
         }
     }
@@ -111,13 +121,37 @@ const Medication = ({ onSubmit, onClose, encId }) => {
         getMedications(encId);
     }, [])
 
-    const addMedication = (medication) => {
-        if (!medication.drugId|| !medication.drugId.value || !medication.freqCodeId || !medication.duration) {
+    const saveDrug = async (drugName) => {
+        const res = await axios.post(`/saveDrug/`, { drugName: drugName });
+        if (res) {
+            return res.data;
+        } else {
+            return -1;
+        }
+    }
+
+    const addMedication = async (medication) => {
+        setAddingDrug(true);
+        let addedDrugId = -1;
+        let isNewDrug = medication.drugId.value < 0 && medication.drugId.label != "";
+        let brandName = medication.drugId.label;
+        if (isNewDrug) {
+            addedDrugId = await saveDrug(brandName);
+            medication.drugId = { value: addedDrugId, label: brandName };
+        }
+        if (isNewDrug && addedDrugId === -1) {
+            setAddingDrug(false);
+            notify('e', 'Something went wrong while adding new drug.')
+            return;
+        }
+
+        if (!medication.drugId || !medication.drugId.value || !medication.freqCodeId || !medication.duration) {
+            setAddingDrug(false);
             return;
         }
         let freqCode = freqCodes.find(freqCode => freqCode.id === medication.freqCodeId);
         setMedications(medications.concat({
-            ...drugs.find(drug => drug.id === medication.drugId.value),
+            ...(!isNewDrug ? drugs.find(drug => drug.id === medication.drugId.value): { id: addedDrugId, brandName: brandName}),
             freqCode: freqCode.code,
             freqCodeId: medication.freqCodeId,
             duration: medication.duration,
@@ -141,16 +175,18 @@ const Medication = ({ onSubmit, onClose, encId }) => {
                 </tr>
                 </thead>
                 <tbody>
-                { medications.filter(medication => !medication['deleted']).map((medication, index) => {
+                {medications.filter(medication => !medication['deleted']).map((medication, index) => {
                     return (
                         <tr key={index}>
-                            <td>{ index + 1 }</td>
-                            <td>{ medication.brandName}</td>
-                            <td className="gj-fnt-14">{ GujWords['freqCodes'][medication.freqCode]}</td>
-                            <td>{ medication.duration} Days</td>
-                            <td>    <button onClick={() => deleteMedication(medication.medId, index)} className="close button-tooltip">
-                                        <span className="lnr lnr-trash" />
-                                    </button>
+                            <td>{index + 1}</td>
+                            <td>{medication.brandName}</td>
+                            <td className="gj-fnt-14">{GujWords['freqCodes'][medication.freqCode]}</td>
+                            <td>{medication.duration} Days</td>
+                            <td>
+                                <button onClick={() => deleteMedication(medication.medId, index)}
+                                        className="close button-tooltip">
+                                    <span className="lnr lnr-trash"/>
+                                </button>
                             </td>
                         </tr>
                     )
@@ -173,7 +209,8 @@ const Medication = ({ onSubmit, onClose, encId }) => {
                 <Col md={12} lg={12} className="nopadding">
                     <Card>
                         <CardBody>
-                            <Form form={form} name="appointment-registration" onFinish={addMedication} initialValues={{"sex": "male"}}
+                            <Form form={form} name="appointment-registration" onFinish={addMedication}
+                                  initialValues={{"sex": "male"}}
                                   className="form">
                                 <div className="form__form-group">
                                     <Row>
@@ -187,7 +224,6 @@ const Medication = ({ onSubmit, onClose, encId }) => {
                                                         placeholder="Search Drug"
                                                         fetchOptions={fetchDrugs}
                                                         onChange={handleChange}
-                                                        ref={brandNameRef}
                                                     >
                                                         {
                                                             drugs.map((drug, index) => {
@@ -211,15 +247,15 @@ const Medication = ({ onSubmit, onClose, encId }) => {
                                                         showSearch
                                                         placeholder="Select Frequency"
                                                         optionFilterProp="children"
-                                                        filterOption={ (input, option) => option.children.replaceAll('-', '').toLowerCase().indexOf(input.toLowerCase()) >= 0 }
+                                                        filterOption={(input, option) => option.children.replaceAll('-', '').toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                                     >
                                                         {
                                                             freqCodes.map((freqCode, index) => {
-                                                            return (
-                                                                <Option key={index} value={freqCode.id}
-                                                                        label={freqCode.code}>
-                                                                    {freqCode.code}
-                                                                </Option>
+                                                                return (
+                                                                    <Option key={index} value={freqCode.id}
+                                                                            label={freqCode.code}>
+                                                                        {freqCode.code}
+                                                                    </Option>
                                                                 );
                                                             })
                                                         }
@@ -231,15 +267,14 @@ const Medication = ({ onSubmit, onClose, encId }) => {
                                         <Col md={2} lg={2}>
                                             <span className="form__form-group-label">Duration (Days)</span>
                                             <div className="form__form-group-field">
-                                                <Form.Item name="duration" >
+                                                <Form.Item name="duration">
                                                     <Input type="Number" maxLength="3" minLength="1"/>
                                                 </Form.Item>
                                             </div>
                                         </Col>
                                         <Col md={1} lg={1} className="nopadding">
-                                            <button className="btn btn-xs btn-primary add-button" type="submit" >
-                                                {/*<i className="add-medication-icon lnr lnr-plus-circle"></i>*/}
-                                                Add
+                                            <button disabled={addingDrug} className="btn btn-xs btn-primary add-button" type="submit">
+                                                { addingDrug ? <Spin size="small" /> : 'Add' }
                                             </button>
                                         </Col>
                                     </Row>
@@ -251,16 +286,17 @@ const Medication = ({ onSubmit, onClose, encId }) => {
                 <Col md={12} lg={12} className="nopadding">
                     <Card>
                         <CardBody>
-                            { medicationTable }
+                            {medicationTable}
                         </CardBody>
                     </Card>
                 </Col>
             </ModalBody>
             <ModalFooter>
-                <Button color="primary" form="medication" type="submit" onClick={validateAndSaveMedication} ref={okRef}>
-                    OK
+                <Button disabled={savingMedications} color="primary" form="medication" type="submit" onClick={validateAndSaveMedication}
+                        ref={okRef}>
+                        { savingMedications ? <Spin size="small" /> : 'OK' }
                 </Button>
-                <Button color="secondary"  onClick = {onClose}>
+                <Button color="secondary" onClick={onClose}>
                     Cancel
                 </Button>
             </ModalFooter>

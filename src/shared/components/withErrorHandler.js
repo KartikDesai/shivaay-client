@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Modal from '../../shared/components/Modal';
+import notify from "./notification/notification";
 
 const withErrorHandler = ( WrappedComponent, axios ) => {
     return class extends Component {
@@ -15,13 +16,17 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
                 return req;
             } );
             this.resInterceptor = axios.interceptors.response.use( res => res, error => {
-                if(error){
+                if(error && error.response && error.response.data){
+                    notify('e', error.response.data.errorMessage);
+                }
+
+                /*if(error){
                     this.setState( { error: error } );
                 }
                 if (error.response && error.response.data) {
                     this.setState( { errorMessage: error.response.data.errorMessage } );
                     this.setState( { status: error.response.data.status } );
-                }
+                }*/
             } );
         }
 

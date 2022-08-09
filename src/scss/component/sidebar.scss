@@ -163,12 +163,12 @@
 .sidebar__link-active
 {
   & .sidebar__link-title {
-    color: #096dd9!important; 
+    color: $color-blue-dark!important;
     font-weight: 500;
   }
 
   & .sidebar__link-icon {
-    color: #096dd9; 
+    color: $color-blue-dark;
     font-weight: 600;
   }
 } 
