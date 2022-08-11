@@ -6,8 +6,10 @@ import Medication from "./medications";
 import axios from "../../../shared/axiosConfig";
 import ChiefComplaint from "./chiefComplaints";
 import {GujWords} from "../../../translations/resources";
+import {connect} from "react-redux";
+import withErrorHandler from "../../../shared/components/withErrorHandler";
 
-const dashboardTabs = ({ encId }) => {
+const dashboardTabs = ({ encId, user }) => {
     const [followUp, setFollowUp] = useState(0);
     const [activeTab, setActiveTab] = useState(1);
     const [medicationModel, setMedicationModel] = useState(false);
@@ -16,6 +18,7 @@ const dashboardTabs = ({ encId }) => {
     const [chiefComplaints, setChiefComplaints] = useState(false);
     const [form] = Form.useForm();
     const [preFollowupDays,setPreFollowupDays] = useState(0);
+    const [pnSectionAccess, setPnSectionAccess] = useState(false);
 
     /* this is for force update */
     const [value, setValue] = useState(0); // integer state
@@ -49,6 +52,17 @@ const dashboardTabs = ({ encId }) => {
         }
     };
 
+    useEffect(() => {
+        // TODO: check performance of number of calling
+        // TODO: change the way permission checking happening
+        if (!user.userInfo || !user.userInfo.roles || !user.userInfo.roles.length === 0) {
+            return;
+        }
+        if (user.userInfo.roles.find( r => r.name === "DOCTOR")) {
+            setPnSectionAccess(true);
+        }
+    }, [user]);
+
     const onFollowupBlur = async() =>{
         if(form.getFieldValue("days") !== preFollowupDays)
         {
@@ -63,7 +77,6 @@ const dashboardTabs = ({ encId }) => {
 
     const onSubmit = (module) => {
         closeModalMedications();
-        console.log("Force Update");
         forceUpdate();
     }
     
@@ -73,7 +86,6 @@ const dashboardTabs = ({ encId }) => {
 
     const closeModalMedications = () => {
         setMedicationModel(false);
-        console.log("Force Update");
         forceUpdate();
     }
 
@@ -83,7 +95,6 @@ const dashboardTabs = ({ encId }) => {
 
     const closeModalChiefComplaint = () => {
         setChiefComplaintModel(false);
-        console.log("Force Update");
         forceUpdate();
     }
 
@@ -122,7 +133,9 @@ const dashboardTabs = ({ encId }) => {
                                 <List.Item>
                                     <div className="col-sm-12">
                                         <div className="col-sm-12 nopadding flex-space-between uppercase">
+                                            { pnSectionAccess ?
                                             <div><strong><span onClick={openModalChiefComplaint}>Chief Complaints</span></strong></div>
+                                                :<div><strong><span>Chief Complaints</span></strong></div> }
                                             {/*<div>25/02/2021</div>*/}
                                         </div>
                                         <div className="col-sm-12 nopadding ml-2">
@@ -135,7 +148,10 @@ const dashboardTabs = ({ encId }) => {
                                 <List.Item>
                                     <div className="col-sm-12">
                                         <div className="col-sm-12 nopadding flex-space-between uppercase">
-                                            <div><strong><span onClick={openModalMedications}>Medications</span></strong></div>
+                                            { pnSectionAccess ?
+                                                <div><strong><span onClick={openModalMedications}>Medications</span></strong></div>
+                                                : <div><strong><span>Medications</span></strong></div> }
+
                                             {/*<div>25/02/2021</div>*/}
                                         </div>
                                         <div className="col-sm-12 nopadding ml-2">
@@ -208,4 +224,7 @@ const dashboardTabs = ({ encId }) => {
         </div>
     );
 };
-export default dashboardTabs;
+export default connect(state => {
+    return {
+        user: state.user
+    }})(dashboardTabs);

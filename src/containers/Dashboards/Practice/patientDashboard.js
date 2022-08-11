@@ -6,10 +6,12 @@ import DashboardTabs from '../Practice/dashboardTabs'
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
 import {Spin} from "antd";
+import {connect} from "react-redux";
 const patientDashboard = props => {
     const [patient, setPatient] = useState({});
     const [markingCompleted, setMarkingCompleted] = useState(false);
     const { encId, patientId } = props.match.params;
+    const [markCompleteAccess, setMarkCompleteAccess] = useState(false);
     const getPatient = async (patientId, encId) => {
         const res = await axios.get(`patientDashboard/${patientId}/${encId}` );
         if (res) {
@@ -34,6 +36,32 @@ const patientDashboard = props => {
             setMarkingCompleted(false);
             props.history.push("/appointments");
         }
+    }
+
+
+    useEffect(() => {
+        // TODO: check performance of number of calling
+        // TODO: change the way permission checking happening
+        if (!props.user.userInfo || !props.user.userInfo.roles || !props.user.userInfo.roles.length === 0) {
+            return;
+        }
+        if (props.user.userInfo.roles.find( r => r.name === "DOCTOR")) {
+            setMarkCompleteAccess(true);
+        }
+    }, [props.user]);
+
+    let markComplete;
+    if (markCompleteAccess) {
+        markComplete = (
+            <button
+                type="button"
+                className="btn btn-xs btn-primary"
+                onClick={() => markCompleteHandler(encId)}
+                disabled={markingCompleted}
+            >
+                { markingCompleted ? <Spin size="small" /> : 'Mark Complete' }
+            </button>
+        )
     }
 
     return(
@@ -100,19 +128,15 @@ const patientDashboard = props => {
                         >
                             Print
                         </button>
-                        <button
-                            type="button"
-                            className="btn btn-xs btn-primary"
-                            onClick={() => markCompleteHandler(encId)}
-                            disabled={markingCompleted}
-                        >
-                            { markingCompleted ? <Spin size="small" /> : 'Mark Complete' }
-                        </button>
+                        { markComplete }
                     </Col>
                 </Row>
             </Container>
         </div>
-    )
+    );
 };
 
-export default withErrorHandler(patientDashboard, axios);
+export default connect(state => {
+    return {
+        user: state.user
+    }})(withErrorHandler(patientDashboard, axios));

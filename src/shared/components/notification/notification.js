@@ -23,7 +23,7 @@ const notify = (type, message) => {
     }
     defaultMessage = message && message.trim() !== "" ? message : defaultMessage;
     notification[notificationType]({
-        message: 'Notification Title',
+        message: 'Notification',
         description: defaultMessage,
     });
 };

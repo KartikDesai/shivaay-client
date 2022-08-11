@@ -16,8 +16,10 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
                 return req;
             } );
             this.resInterceptor = axios.interceptors.response.use( res => res, error => {
+                console.log(error.response);
+                // TODO: replace errorMessage with message
                 if(error && error.response && error.response.data){
-                    notify('e', error.response.data.errorMessage);
+                    notify('e', error.response.data.errorMessage || error.response.data.error );
                 }
 
                 /*if(error){

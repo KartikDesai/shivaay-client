@@ -33,6 +33,7 @@ const appointments = props => {
     const [doctors, setDoctors] = useState([]);
     const [encs, setEncs] = useState([]);
     const [activeTab, setActiveTab] = useState(1);
+    const [myActiveAccess, setMyActiveAccess] = useState(false);
     
     const {theme} = props;
     const toggle = () => {
@@ -43,6 +44,17 @@ const appointments = props => {
         'ltr-support': true,
         [theme.className]: true
     });
+
+    useEffect(() => {
+        // TODO: check performance of number of calling
+        // TODO: change the way permission checking happening
+        if (!props.user.userInfo || !props.user.userInfo.roles || !props.user.userInfo.roles.length === 0) {
+            return;
+        }
+        if (props.user.userInfo.roles.find( r => r.name === "DOCTOR")) {
+            setMyActiveAccess(true);
+        }
+    }, [props.user]);
 
     const modelClose =()=> {
         setModal(false);
@@ -88,23 +100,30 @@ const appointments = props => {
         }
     };
 
+    let myActiveLink;
+    if (myActiveAccess) {
+        myActiveLink = (
+            <NavItem>
+                <NavLink
+                    className={classnames({active: activeTab === 'my'})}
+                    onClick={() => {
+                        toggleTab('my');
+                    }}
+                >
+                    My Active
+                </NavLink>
+            </NavItem>
+        )
+    }
+
     return (
         <>
 
             <div className="tabs tabs--justify tabs--bordered-top">
                 <div className="tabs__wrap">
-                    <div className="col-sm-12 flex flex-row-reverse">
+                    <div className="col-sm-12">
                         <Nav tabs className="dashboard-navs">
-                            <NavItem>
-                                <NavLink
-                                    className={classnames({active: activeTab === 'my'})}
-                                    onClick={() => {
-                                        toggleTab('my');
-                                    }}
-                                >
-                                    My
-                                </NavLink>
-                            </NavItem>
+                            { myActiveLink }
                             <NavItem>
                                 <NavLink
                                     className={classnames({active: activeTab === 'all'})}
@@ -112,7 +131,7 @@ const appointments = props => {
                                         toggleTab('all');
                                     }}
                                 >
-                                    All
+                                    All Active
                                 </NavLink>
                             </NavItem>
                             <NavItem>
@@ -216,7 +235,7 @@ const appointments = props => {
                 />
             </Modal>
         </>
-    )
+    );
 }
 export default connect(state=>{
     return {
