@@ -1,6 +1,6 @@
 import { notification } from 'antd';
 const notify = (type, message) => {
-    let notificationType = "info";
+    let notificationType;
     let defaultMessage;
     switch (type) {
         case "s" || "S":
@@ -18,6 +18,9 @@ const notify = (type, message) => {
         case "e" || "E":
             notificationType = "error"
             defaultMessage = "Error!"
+            break;
+        default:
+            notificationType = "info";
             break;
 
     }

@@ -11,7 +11,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../scss/app.scss';
 import { config as i18nextConfig } from '../../translations';
 import Router from './Router';
-import DebugRouter from "./DebugRouter";
 
 i18next.init(i18nextConfig);
 

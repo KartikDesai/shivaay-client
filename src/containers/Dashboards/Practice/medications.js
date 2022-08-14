@@ -1,29 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {
-    Row,
-    Button,
-    Card,
-    CardBody,
-    Col,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Table
-} from 'reactstrap';
+import {Button, Card, CardBody, Col, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table} from 'reactstrap';
 import {Form, Input, Select, Spin} from "antd";
 import classNames from "classnames";
 import axios from '../../../shared/axiosConfig'
 import withErrorHandler from "../../../shared/components/withErrorHandler";
-import { GujWords } from '../../../translations/resources'
-import useFocus from '../../../shared/hooks/use-focus-hook'
+import {GujWords} from '../../../translations/resources'
 import useCtrlEnter from "../../../shared/hooks/ctrl-enter-hook";
 import DSelect from "../../../shared/components/form/DSelect";
 import notify from "../../../shared/components/notification/notification";
 
 const { Option } = Select;
 
-const Medication = ({ onSubmit, onClose, encId }) => {
+const Medication = ({ onClose, encId }) => {
     const [modalMedications, setModalMedications] = useState(true);
     const [freqCodes, setFreqCodes] = useState([]);
     const [drugs, setDrugs] = useState([]);
@@ -31,7 +19,7 @@ const Medication = ({ onSubmit, onClose, encId }) => {
     const [addingDrug, setAddingDrug] = useState(false);
     const [savingMedications, setSavingMedications] = useState(false);
     const [medications, setMedications] = useState([]);
-    const [brandNameRef, setBrandNameFocus] = useFocus()
+    // const [brandNameRef, setBrandNameFocus] = useFocus()
     const [form] = Form.useForm();
 
     const okRef = useRef(null)
@@ -133,7 +121,7 @@ const Medication = ({ onSubmit, onClose, encId }) => {
     const addMedication = async (medication) => {
         setAddingDrug(true);
         let addedDrugId = -1;
-        let isNewDrug = medication.drugId.value < 0 && medication.drugId.label != "";
+        let isNewDrug = medication.drugId.value < 0 && medication.drugId.label !== "";
         let brandName = medication.drugId.label;
         if (isNewDrug) {
             addedDrugId = await saveDrug(brandName);
@@ -158,7 +146,7 @@ const Medication = ({ onSubmit, onClose, encId }) => {
             medId: 0 // For newly added medication,
         }));
         onReset();
-        setBrandNameFocus();
+        // setBrandNameFocus();
     }
 
     let medicationTable = "";

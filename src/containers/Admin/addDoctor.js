@@ -1,14 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Button, Card, CardBody, Col, ModalBody, ModalFooter, ModalHeader,} from 'reactstrap';
-import { Form, Input, Radio, Select} from "antd";
+import {Form, Input, Radio} from "antd";
 import MaskedInput from 'antd-mask-input'
-import DSelect from "../../shared/components/form/DSelect";
 import axios from "../../shared/axiosConfig";
 import useFocus from "../../shared/hooks/use-focus-hook";
 import notify from "../../shared/components/notification/notification";
 
 
-const { Option } = Select;
 const { TextArea } = Input;
 
 const addDoctor = ({ onClose }) => {

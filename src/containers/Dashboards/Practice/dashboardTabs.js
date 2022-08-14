@@ -7,7 +7,6 @@ import axios from "../../../shared/axiosConfig";
 import ChiefComplaint from "./chiefComplaints";
 import {GujWords} from "../../../translations/resources";
 import {connect} from "react-redux";
-import withErrorHandler from "../../../shared/components/withErrorHandler";
 
 const dashboardTabs = ({ encId, user }) => {
     const [followUp, setFollowUp] = useState(0);

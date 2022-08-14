@@ -5,14 +5,16 @@ import {Table} from "antd";
 import {connect} from "react-redux";
 import withErrorHandler from "../../shared/components/withErrorHandler";
 import axios from "../../shared/axiosConfig";
-import AddDoctor from "../Admin/addDoctor";
+import AddDrug from "../Admin/addDrug";
 
 const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name'},
-    { title: 'Speciality', dataIndex: 'speciality', key: 'speciality' },
-    { title: 'Contact No.', dataIndex: 'phone', key: 'contactno' },
-    { title: 'Gender', dataIndex: 'sex', key: 'gender' },
-    { title: 'Address', dataIndex: 'address', key: 'address' },
+    { title: 'Brand Name', dataIndex: 'brandName', key: 'brandName'},
+    { title: 'Content', dataIndex: 'content', key: 'content' },
+    { title: 'Company Name', dataIndex: 'company', key: 'company' },
+    { title: 'Code', dataIndex: 'code', key: 'code' },
+    { title: 'Generic', dataIndex: 'generic', key: 'generic' },
+    { title: 'Type', dataIndex: 'type', key: 'type' },
+
     /*{
         title: 'Action',
         dataIndex: '',
@@ -21,31 +23,31 @@ const columns = [
     },*/
 ];
 
-const doctors = (props)=> {
+const drugs = (props)=> {
     const [modal, setModal] = useState(false);
-    const [doctors, setDoctors] = useState([]);
+    const [drugs, setDrugs] = useState([]);
     const {theme} = props;
     const modalClasses = classNames({
-        'add-doctor': true,
+        'add-drug': true,
         'ltr-support': true,
         [theme.className]: true
     });
 
-    const modelClose = () => {
+    const modelClose = (res) => {
         setModal(false);
-        getDoctors();
+        getDrugs();
     }
     const toggle = () => {
         setModal(prevState => !prevState);
     }
 
-    const getDoctors = async () => {
-        const res = await axios.get('/getDoctors');
-        if (res) { setDoctors(res.data); }
+    const getDrugs = async () => {
+        const res = await axios.get('/getDrugs');
+        if (res) {  setDrugs(res.data); }
     }
 
     useEffect( ()=>{
-        getDoctors();
+        getDrugs();
     }, [])
 
     return(
@@ -53,7 +55,7 @@ const doctors = (props)=> {
             <Container>
                 <Row>
                     <Col md={12} lg={12} sm={12} className="flex flex-row-reverse mb-4">
-                        <Button color="primary" onClick={toggle}>Add Doctor</Button>
+                        <Button color="primary" onClick={toggle}>Add Drug</Button>
                     </Col>
                     <Col md={12} lg={12} sm={12}>
                         <Table
@@ -62,14 +64,16 @@ const doctors = (props)=> {
                                  expandedRowRender: record => <p style={{ margin: 0 }}>{record.description}</p>,
                                  rowExpandable: record => record.name !== 'Not Expandable',
                              }}*/
-                            dataSource={doctors.map((doctor, i) => (
+                            dataSource={drugs.map((drug, i) => (
                                 {
                                     key: i,
-                                    name: `${doctor.fname} ${doctor.lname}`,
-                                    speciality : doctor.speciality,
-                                    phone: doctor.phone,
-                                    sex : doctor.sex,
-                                    address: doctor.address1,
+                                    brandName: drug.brandName,
+                                    content : drug.content,
+                                    company : drug.company,
+                                    code : drug.code,
+                                    generic : drug.generic,
+                                    type : drug.type,
+
                                 }
                             ))}
                         />
@@ -83,7 +87,7 @@ const doctors = (props)=> {
                 toggle={toggle}
                 className={modalClasses}
             >
-                <AddDoctor
+                <AddDrug
                     onClose = {modelClose}
                 />
             </Modal>
@@ -94,4 +98,4 @@ export default connect(state=>{
     return {
         theme : state.theme
     }
-})(withErrorHandler(doctors, axios));
+})(withErrorHandler(drugs, axios));

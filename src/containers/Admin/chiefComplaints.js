@@ -5,14 +5,12 @@ import {Table} from "antd";
 import {connect} from "react-redux";
 import withErrorHandler from "../../shared/components/withErrorHandler";
 import axios from "../../shared/axiosConfig";
-import AddDoctor from "../Admin/addDoctor";
+import AddChiefComplaint from "../Admin/addChiefComplaint";
 
 const columns = [
     { title: 'Name', dataIndex: 'name', key: 'name'},
-    { title: 'Speciality', dataIndex: 'speciality', key: 'speciality' },
-    { title: 'Contact No.', dataIndex: 'phone', key: 'contactno' },
-    { title: 'Gender', dataIndex: 'sex', key: 'gender' },
-    { title: 'Address', dataIndex: 'address', key: 'address' },
+    { title: 'Description', dataIndex: 'description', key: 'description' },
+
     /*{
         title: 'Action',
         dataIndex: '',
@@ -21,31 +19,31 @@ const columns = [
     },*/
 ];
 
-const doctors = (props)=> {
+const chiefComplaints = (props)=> {
     const [modal, setModal] = useState(false);
-    const [doctors, setDoctors] = useState([]);
+    const [chiefComplaints, setChiefComplaints] = useState([]);
     const {theme} = props;
     const modalClasses = classNames({
-        'add-doctor': true,
+        'add-chief-complaint': true,
         'ltr-support': true,
         [theme.className]: true
     });
 
-    const modelClose = () => {
+    const modelClose = (res) => {
         setModal(false);
-        getDoctors();
+        getChiefComplaint();
     }
     const toggle = () => {
         setModal(prevState => !prevState);
     }
 
-    const getDoctors = async () => {
-        const res = await axios.get('/getDoctors');
-        if (res) { setDoctors(res.data); }
+    const getChiefComplaint = async () => {
+        const res = await axios.get('/getChiefComplaints');
+        if (res) { console.log(res.data); setChiefComplaints(res.data); }
     }
 
     useEffect( ()=>{
-        getDoctors();
+        getChiefComplaint();
     }, [])
 
     return(
@@ -53,7 +51,7 @@ const doctors = (props)=> {
             <Container>
                 <Row>
                     <Col md={12} lg={12} sm={12} className="flex flex-row-reverse mb-4">
-                        <Button color="primary" onClick={toggle}>Add Doctor</Button>
+                        <Button color="primary" onClick={toggle}>Add Chief Complaint</Button>
                     </Col>
                     <Col md={12} lg={12} sm={12}>
                         <Table
@@ -62,14 +60,12 @@ const doctors = (props)=> {
                                  expandedRowRender: record => <p style={{ margin: 0 }}>{record.description}</p>,
                                  rowExpandable: record => record.name !== 'Not Expandable',
                              }}*/
-                            dataSource={doctors.map((doctor, i) => (
+                            dataSource={chiefComplaints.map((chiefComplaint, i) => (
                                 {
                                     key: i,
-                                    name: `${doctor.fname} ${doctor.lname}`,
-                                    speciality : doctor.speciality,
-                                    phone: doctor.phone,
-                                    sex : doctor.sex,
-                                    address: doctor.address1,
+                                    name: chiefComplaint.name,
+                                    description : chiefComplaint.description,
+
                                 }
                             ))}
                         />
@@ -83,7 +79,7 @@ const doctors = (props)=> {
                 toggle={toggle}
                 className={modalClasses}
             >
-                <AddDoctor
+                <AddChiefComplaint
                     onClose = {modelClose}
                 />
             </Modal>
@@ -94,4 +90,4 @@ export default connect(state=>{
     return {
         theme : state.theme
     }
-})(withErrorHandler(doctors, axios));
+})(withErrorHandler(chiefComplaints, axios));

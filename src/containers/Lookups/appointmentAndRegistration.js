@@ -1,19 +1,17 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect,  useState} from 'react';
 import {Button, Card, CardBody, Col, ModalBody, ModalFooter, ModalHeader,} from 'reactstrap';
 import { Form, Input, Radio, Select} from "antd";
 import MaskedInput from 'antd-mask-input'
 import DSelect from "../../shared/components/form/DSelect";
 import axios from "../../shared/axiosConfig";
-import useFocus from "../../shared/hooks/use-focus-hook";
 
 const { Option } = Select;
 
 const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => {
     const [searchPatientQuery, setSearchPatientQuery] = useState();
     const [patients, setPatients] = useState([]);
-    const [initialValue, setInitialValue] = useState({"sex": "M"});
+    const [initialValue] = useState({"sex": "M"});
     const [appointmentForm] = Form.useForm();
-    const [fnameRef, setFnameFocus] = useFocus();
     const [savingAppointment, setSavingAppointment] = useState(false);
 
     /*const config = {

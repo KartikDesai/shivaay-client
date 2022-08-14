@@ -1,18 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Input, List, Table} from 'antd';
+import {Table} from 'antd';
 import {Button, Col, Container, Modal, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
-import classNames from "classnames";
+import classnames from "classnames";
 import AppointmentAndRegistration from "../../Lookups/appointmentAndRegistration";
 import axios from "../../../shared/axiosConfig";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../shared/components/withErrorHandler";
 import {Link} from "react-router-dom";
-import notify from "../../../shared/components/notification/notification";
-import classnames from "classnames";
-import ChiefComplaint from "./chiefComplaints";
-import {GujWords} from "../../../translations/resources";
-import Medication from "./medications";
-
 
 const columns = [
     { title: 'Name', dataIndex: 'name', key: 'name',render: (data,record) => <Link to={`/patientDashboard/${record.patientId}/${record.encId}`}>{data}</Link>},
@@ -39,7 +33,7 @@ const appointments = props => {
     const toggle = () => {
         setModal(prevState => !prevState);
     }
-    const modalClasses = classNames({
+    const modalClasses = classnames({
         'appointment-and-registration': true,
         'ltr-support': true,
         [theme.className]: true
@@ -75,21 +69,19 @@ const appointments = props => {
     useEffect(() => {
         axios.get('/chiefComplaint/getKeywords')
             .then(res => {
-                setChiefComplaints(res.data);
+                if (res) {
+                    setChiefComplaints(res.data);
+                }
             })
-            .catch(err => {
-                console.log("Error while fetching chief complaints");
-            });
     }, [])
 
     useEffect(() => {
         axios.get('/getDoctors')
             .then(res => {
-                setDoctors(res.data);
+                if (res) {
+                    setDoctors(res.data);
+                }
             })
-            .catch(err => {
-                console.log("Error while fetching doctors.");
-            });
         setActiveTab('all');
     }, [])
 
@@ -150,7 +142,7 @@ const appointments = props => {
                         <TabPane tabId='my' className="p-3">
                             <Container>
                                 <Row>
-                                    <Col md={12} lg={12} md={12}>
+                                    <Col md={12} lg={12} sm={12} >
                                         <Table
                                             columns={columns}
                                             dataSource={encs.map((enc, i) => (
@@ -172,10 +164,10 @@ const appointments = props => {
                         <TabPane tabId='all' className="p-3">
                             <Container>
                                 <Row>
-                                    <Col md={12} lg={12} md={12} className="flex flex-row-reverse mb-4">
+                                    <Col md={12} lg={12} sm={12} className="flex flex-row-reverse mb-4">
                                         <Button color="primary" onClick={toggle}>Add Appointment</Button>
                                     </Col>
-                                    <Col md={12} lg={12} md={12}>
+                                    <Col md={12} lg={12} sm={12}>
                                         <Table
                                             columns={columns}
                                             dataSource={encs.map((enc, i) => (
@@ -197,7 +189,7 @@ const appointments = props => {
                         <TabPane tabId='past' className="p-3">
                             <Container>
                                 <Row>
-                                    <Col md={12} lg={12} md={12}>
+                                    <Col md={12} lg={12} sm={12}>
                                         <Table
                                             columns={columns}
                                             dataSource={encs.map((enc, i) => (

@@ -7,10 +7,6 @@ const sidebarContent = props => {
 
     const [adminMenus, setAdminMenus] = useState("");
 
-    const hideSidebar = () => {
-        const {onClick} = props;
-        onClick();
-    };
     useEffect(() => {
         // TODO: check performance of number of calling
         // TODO: change the way permission checking happening
@@ -21,8 +17,8 @@ const sidebarContent = props => {
             setAdminMenus(
                 <SidebarCategory title="Admin" icon="user">
                     <SidebarLink title="Configure Doctor" route="/admin/doctor"/>
-                    <SidebarLink title="Configure Chief Complaints" route="/lock_screen"/>
-                    <SidebarLink title="Configure Drugs" route="/log_in_photo"/>
+                    <SidebarLink title="Configure Drug" route="/admin/drug" />
+                    <SidebarLink title="Configure Chief Complaint"  route="/admin/chiefcomplaint" />
                 </SidebarCategory>
             );
         }

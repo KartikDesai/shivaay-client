@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import  {Row, Button, Card, CardBody, Col, Modal, ModalBody, ModalFooter, ModalHeader, Table} from 'reactstrap';
-import { Form, Input, Select} from "antd";
+import {Button, Card, CardBody, Col, Modal, ModalBody, ModalFooter, ModalHeader, Row} from 'reactstrap';
+import {Form, Select} from "antd";
 import classNames from "classnames";
 import axios from '../../../shared/axiosConfig'
 import withErrorHandler from "../../../shared/components/withErrorHandler";
 
 const { Option } = Select;
 
-const ChiefComplaint = ({ onSubmit, onClose, encId }) => {
+const ChiefComplaint = ({ onClose, encId }) => {
     const [modalChiefComplaints, setModalChiefComplaints] = useState(true);
     const [keywords, setKeywords] = useState(['Abdominal Pain']);
     const [chiefComplaints, setChiefComplaints] = useState("");
