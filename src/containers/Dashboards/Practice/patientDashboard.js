@@ -78,36 +78,26 @@ const patientDashboard = props => {
                                             <p className="patient__name">{ `${patient.fname} ${patient.lname}`}</p>
                                             <p className="profile__work">{ `${ patient.age } years, `}{ patient.sex === "M" ? "Male": "Female" }</p>
                                             <div className="row patient-detail-more flex-space-between pl-3">
-                                                <div className="">
-                                                    <div className="patient-detail-matrix">
+                                                    <div className="patient-detail-matrix patient-detail-matrix-date">
                                                         <div className="patient-detail-matrix-label"><strong>Date</strong></div>
                                                         { moment(patient.starttime).format("DD/MM/YYYY") }
                                                     </div>
-                                                </div>
-                                                <div className="">
-                                                    <div className="patient-detail-matrix">
+                                                    <div className="patient-detail-matrix patient-detail-matrix-phone">
                                                         <div className="patient-detail-matrix-label"><strong>Phone</strong></div>
                                                         { patient.phone }
                                                     </div>
-                                                </div>
-                                                <div className="">
-                                                    <div className="patient-detail-matrix">
+                                                    <div className="patient-detail-matrix patient-detail-matrix-address">
                                                         <div className="patient-detail-matrix-label"><strong>Address</strong></div>
                                                         { patient.address1 }
                                                     </div>
-                                                </div>
-                                                <div className="">
-                                                    <div className="patient-detail-matrix">
+                                                    <div className="patient-detail-matrix patient-detail-matrix-refby">
                                                         <div className="patient-detail-matrix-label"><strong>Ref. By</strong></div>
                                                         { patient.refby }
                                                     </div>
-                                                </div>
-                                                <div className="">
-                                                    <div className="patient-detail-matrix">
+                                                    <div className="patient-detail-matrix patient-detail-matrix-doctor">
                                                         <div className="patient-detail-matrix-label"><strong>Doctor</strong></div>
                                                         { `Dr. ${patient.doctorFname} ${patient.doctorLname}` }
                                                     </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>

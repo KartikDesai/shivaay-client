@@ -53,13 +53,14 @@
         margin-right: 5px;
       }
     }
-    & .dashboard-navs{
-      display: none!important;
-    }
-    & .patient-dashboard-header {
-      display: none!important;
-    }
-    & .footer-buttons {
+    & .dashboard-navs,
+      .footer-buttons,
+      .patient-dashboard-header,
+      .patient-detail-matrix-date,
+      .patient-detail-matrix-phone,
+      .patient-detail-matrix-address,
+      .patient-detail-matrix-refby
+    {
       display: none!important;
     }
     & .patient-detail-more{

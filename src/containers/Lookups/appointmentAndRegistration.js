@@ -14,16 +14,6 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
     const [appointmentForm] = Form.useForm();
     const [savingAppointment, setSavingAppointment] = useState(false);
 
-    /*const config = {
-        rules: [
-            {
-                type: 'object',
-                required: true,
-                message: 'Please select time!',us
-            },
-        ],
-    };*/
-
     const fetchPatients = async (query) => {
         if (query) {
             const res = await axios.get(`/getPatients/${query}`);
@@ -86,7 +76,7 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                     <CardBody>
                         <Form form={appointmentForm} name="appointment-registration" onFinish={createEnc} initialValues={initialValue}
                               className="form">
-                            <div className="form__half">
+                            <div className="form__half mr-4">
                                 <Form.Item name="id">
                                     <DSelect
                                         showArrow={false}
@@ -96,6 +86,7 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                         onChange={handleChange}
                                         onSelect={populatePatientDetail}
                                         allowClear
+                                        notFoundContent="No Patient Found!"
                                         onClear={ () => appointmentForm.resetFields() }
                                     >
                                         {
@@ -110,9 +101,6 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                         }
                                     </DSelect>
                                 </Form.Item>
-                            </div>
-                            <div className="form__half"></div>
-                            <div className="form__half mr-4">
                                 <div className="form__form-group">
                                     <span className="form__form-group-label">First Name</span>
                                     <div className="form__form-group-field">
@@ -131,14 +119,31 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                     </div>
                                 </div>
                                 <div className="form__form-group">
-                                    <span className="form__form-group-label">Last Name</span>
+                                    <span className="form__form-group-label">Middle Name</span>
+                                    <div className="form__form-group-field">
+                                        <Form.Item
+                                            name="mname"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input middle name!',
+                                                    whitespace: true,
+                                                },
+                                            ]}
+                                        >
+                                            <Input/>
+                                        </Form.Item>
+                                    </div>
+                                </div>
+                                <div className="form__form-group">
+                                    <span className="form__form-group-label">Surname</span>
                                     <div className="form__form-group-field">
                                         <Form.Item
                                             name="lname"
                                             rules={[
                                                 {
                                                     required: true,
-                                                    message: 'Please input last name!',
+                                                    message: 'Please input surname!',
                                                     whitespace: true,
                                                 },
                                             ]}
@@ -171,8 +176,10 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                         </Form.Item>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div className="form__half">
                                 <div className="form__form-group">
-                                    <span className="form__form-group-label">Gender</span>
                                     <div className="form__form-group-field">
                                         <Form.Item name="sex">
                                             <Radio.Group>
@@ -182,9 +189,6 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                         </Form.Item>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="form__half">
                                 <div className="form__form-group">
                                     <span className="form__form-group-label">Chief Complaints</span>
                                     <div className="form__form-group-field">
@@ -244,11 +248,9 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                         </Form.Item>
                                     </div>
                                 </div>
-
                                 <Form.Item name="patientId" >
                                     <Input type="hidden"/>
                                 </Form.Item>
-    
                             </div>
                         </Form>
                     </CardBody>

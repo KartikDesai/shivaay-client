@@ -39,7 +39,7 @@ const chiefComplaints = (props)=> {
 
     const getChiefComplaint = async () => {
         const res = await axios.get('/getChiefComplaints');
-        if (res) { console.log(res.data); setChiefComplaints(res.data); }
+        if (res) { setChiefComplaints(res.data); }
     }
 
     useEffect( ()=>{
