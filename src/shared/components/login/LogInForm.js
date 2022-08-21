@@ -40,7 +40,7 @@ class LogInForm extends PureComponent {
           {errorMessage}
           {errorMsg}
         </Alert>
-        <div className="form__form-group">
+        <div className="form__form-group mb-3">
           <span className="form__form-group-label">Username</span>
           <div className="form__form-group-field">
             <div className="form__form-group-icon">
@@ -54,7 +54,7 @@ class LogInForm extends PureComponent {
             />
           </div>
         </div>
-        <div className="form__form-group">
+        <div className="form__form-group mb-3">
           <span className="form__form-group-label">Password</span>
           <div className="form__form-group-field">
             <div className="form__form-group-icon">
