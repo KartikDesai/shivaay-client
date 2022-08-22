@@ -75,29 +75,21 @@ const patientDashboard = props => {
                                 <CardBody className="profile__card">
                                     <div className="profile__information">
                                         <div className="profile__data">
-                                            <p className="patient__name">{ `${patient.fname} ${patient.lname}`}</p>
-                                            <p className="profile__work">{ `${ patient.age } years, `}{ patient.sex === "M" ? "Male": "Female" }</p>
-                                            <div className="row patient-detail-more flex-space-between pl-3">
-                                                    <div className="patient-detail-matrix patient-detail-matrix-date">
-                                                        <div className="patient-detail-matrix-label"><strong>Date</strong></div>
-                                                        { moment(patient.starttime).format("DD/MM/YYYY") }
+                                            <div className="patient-dashboard-header-profile">
+                                                <div className="patient-dashboard-header-left">
+                                                    <p className="patient__name">{ `${patient.fname} ${patient.lname}`} { `${ patient.age }Y, `}{ patient.sex === "M" ? "M": "F" }</p>
+                                                    <div className="patient-headset">
+                                                        <span className="lnr lnr-phone-handset" style={{marginTop: '2px', float: 'left', paddingRight: '3px'}}></span><p className="profile__work"> { patient.phone }</p>
                                                     </div>
-                                                    <div className="patient-detail-matrix patient-detail-matrix-phone">
-                                                        <div className="patient-detail-matrix-label"><strong>Phone</strong></div>
-                                                        { patient.phone }
+                                                    <div className="patient-address mb-3">
+                                                        <span className="lnr lnr-map-marker" style={{marginTop: '2px', float: 'left', paddingRight: '3px'}}></span><p className="profile__work mb-3"> { patient.address1 }</p>
                                                     </div>
-                                                    <div className="patient-detail-matrix patient-detail-matrix-address">
-                                                        <div className="patient-detail-matrix-label"><strong>Address</strong></div>
-                                                        { patient.address1 }
-                                                    </div>
-                                                    <div className="patient-detail-matrix patient-detail-matrix-refby">
-                                                        <div className="patient-detail-matrix-label"><strong>Ref. By</strong></div>
-                                                        { patient.refby }
-                                                    </div>
-                                                    <div className="patient-detail-matrix patient-detail-matrix-doctor">
-                                                        <div className="patient-detail-matrix-label"><strong>Doctor</strong></div>
-                                                        { `Dr. ${patient.doctorFname} ${patient.doctorLname}` }
-                                                    </div>
+                                                </div>
+                                                <div className="patient-dashboard-header-right">
+                                                    <span><strong>Date:</strong>  { moment(patient.starttime).format("DD/MM/YYYY") }</span>
+                                                    <span><strong>Ref. By:</strong>  { patient.refby }</span>
+                                                    <span><strong>Dr.:</strong>  { `${patient.doctorFname} ${patient.doctorLname}` }</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

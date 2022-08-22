@@ -29,6 +29,15 @@
     display: grid;
     grid-template-columns: 8% 5% 5% 85%
   }
+  & .patient-dashboard-header-profile {
+    display: grid;
+    grid-template-columns: 85% 15%;
+  }
+  & .patient-dashboard-header-right {
+    display: grid;
+    grid-template-columns: 100%;
+    margin-top: -15px;
+  }
 }
 
 @media print {
@@ -56,10 +65,11 @@
     & .dashboard-navs,
       .footer-buttons,
       .patient-dashboard-header,
-      .patient-detail-matrix-date,
       .patient-detail-matrix-phone,
       .patient-detail-matrix-address,
-      .patient-detail-matrix-refby
+      .patient-detail-matrix-refby,
+      .patient-headset,
+      .patient-address
     {
       display: none!important;
     }
@@ -76,6 +86,10 @@
     & .advice-followup {
       display: grid;
       grid-template-columns: 25% 10% 10%!important;
+    }
+    & .patient-dashboard-header-profile {
+      display: grid;
+      grid-template-columns: 75% 25%;
     }
   }
 }

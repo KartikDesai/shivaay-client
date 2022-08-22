@@ -132,7 +132,7 @@
   @include directify($directions) {
     #{directed('padding-left')}: 25px;
   }
-  width: calc(100% - 140px);
+  width: 100%;
 }
 
 .profile__name {
@@ -145,7 +145,6 @@
 
 .profile__work {
   font-weight: 500;
-  margin-bottom: 10px;
   margin-top: 0;
   opacity: 0.6;
   line-height: 18px;
