@@ -30,6 +30,8 @@ const appointments = props => {
     const [myActiveAccess, setMyActiveAccess] = useState(false);
     
     const {theme} = props;
+    const {currentTab} = props.match.params;
+    const tabs = ['my', 'all', 'past'];
     const toggle = () => {
         setModal(prevState => !prevState);
     }
@@ -82,7 +84,8 @@ const appointments = props => {
                     setDoctors(res.data);
                 }
             })
-        setActiveTab('all');
+        setActiveTab(tabs.includes(currentTab) ? currentTab : 'all');
+
     }, [])
 
     const toggleTab = (tab) => {
@@ -145,6 +148,10 @@ const appointments = props => {
                                     <Col md={12} lg={12} sm={12} >
                                         <Table
                                             columns={columns}
+                                            expandable={{
+                                                expandedRowRender: record => <p style={{ margin: 0 }}>{record.chiefComplaint}</p>,
+
+                                            }}
                                             dataSource={encs.map((enc, i) => (
                                                 {
                                                     key: i,

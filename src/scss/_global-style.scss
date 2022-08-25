@@ -67,3 +67,15 @@
 .border-bottom {
   border-bottom: 1px solid #f0f0f0;
 }
+
+.doctor-speciality {
+  font-size: 11px;
+  color: $color-dark-gray;
+}
+
+@media print {
+  .doctor-speciality {
+    font-size: 13px;
+    color: $color-dark-gray;
+  }
+}

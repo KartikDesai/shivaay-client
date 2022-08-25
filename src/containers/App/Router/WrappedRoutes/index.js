@@ -28,7 +28,7 @@ const WrappedRoutes = props => {
                     <Route path = "/admin/drug" component={Drugs} />
                     <Route path = "/admin/chiefcomplaint" component={ChiefComplaints} />
 
-                    <Route path="/appointments" component={Appointments}/>
+                    <Route path="/appointments/:currentTab?" component={Appointments}/>
                     <Route path="/" exact component={Appointments}/>
                     <Route path="/patientDashboard/:patientId/:encId" component={PatientDashboard} />
                 </Switch>

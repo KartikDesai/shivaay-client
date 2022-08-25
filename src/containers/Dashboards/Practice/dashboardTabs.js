@@ -5,6 +5,8 @@ import {Form, Input, List} from "antd";
 import Medication from "./medications";
 import axios from "../../../shared/axiosConfig";
 import ChiefComplaint from "./chiefComplaints";
+import Remarks from "./remarks";
+import Vitals from "./vitals";
 import {GujWords} from "../../../translations/resources";
 import {connect} from "react-redux";
 
@@ -13,8 +15,14 @@ const dashboardTabs = ({ encId, user }) => {
     const [activeTab, setActiveTab] = useState(1);
     const [medicationModel, setMedicationModel] = useState(false);
     const [chiefComplaintModel, setChiefComplaintModel] = useState(false);
+    const [remarksModel, setRemarksModel] = useState(false);
+    const [vitalsModel, setVitalsModel] = useState(false);
     const [medications, setMedications] = useState(false);
     const [chiefComplaints, setChiefComplaints] = useState(false);
+    const [remarks, setRemarks] = useState(false);
+    const [vitals, setVitals] = useState(false);
+
+
     const [form] = Form.useForm();
     const [preFollowupDays,setPreFollowupDays] = useState(0);
     const [pnSectionAccess, setPnSectionAccess] = useState(false);
@@ -39,10 +47,17 @@ const dashboardTabs = ({ encId, user }) => {
             setChiefComplaints(res.data);
         }
     }
+    const getRemarks = async (encId) => {
+        const res = await axios.get(`/getRemarks/${encId}` );
+        if (res) {
+            setRemarks(res.data);
+        }
+    }
 
     useEffect(() => {
         getMedications(encId);
         getChiefComplaints(encId);
+        getRemarks(encId);
     }, [value])
 
     const toggle = (tab) => {
@@ -94,6 +109,22 @@ const dashboardTabs = ({ encId, user }) => {
 
     const closeModalChiefComplaint = () => {
         setChiefComplaintModel(false);
+        forceUpdate();
+    }
+
+    const openModalRemarks = () => {
+        setRemarksModel(true);
+    }
+    const closeModalRemarks = () => {
+        setRemarksModel(false);
+        forceUpdate();
+    }
+
+    const openModalVitals = () => {
+        setVitalsModel(true);
+    }
+    const closeModalVitals = () => {
+        setVitalsModel(false);
         forceUpdate();
     }
 
@@ -168,6 +199,35 @@ const dashboardTabs = ({ encId, user }) => {
                                     </div>
                                     { medicationModel && <Medication onClose={closeModalMedications} onSubmit={onSubmit} encId={ encId }/> }
                                 </List.Item>
+
+                                <List.Item>
+                                    <div className="col-sm-12">
+                                        <div className="col-sm-12 nopadding flex-space-between uppercase">
+                                            { pnSectionAccess ?
+                                                <div><strong><span onClick={openModalRemarks}>Remarks</span></strong></div>
+                                                :<div><strong><span>Remarks</span></strong></div> }
+                                        </div>
+                                        <div className="col-sm-12 nopadding ml-2">
+                                            { remarks }
+                                        </div>
+                                    </div>
+                                    { remarksModel && <Remarks onClose={closeModalRemarks} onSubmit={onSubmit} encId={ encId }/> }
+                                </List.Item>
+
+                                <List.Item>
+                                    <div className="col-sm-12">
+                                        <div className="col-sm-12 nopadding flex-space-between uppercase">
+                                            { pnSectionAccess ?
+                                                <div><strong><span onClick={openModalVitals}>Vitals</span></strong></div>
+                                                :<div><strong><span>Vitals</span></strong></div> }
+                                        </div>
+                                        <div className="col-sm-12 nopadding ml-2">
+                                            { vitals }
+                                        </div>
+                                    </div>
+                                    { vitalsModel && <Vitals onClose={closeModalVitals()} onSubmit={onSubmit} encId={ encId }/> }
+                                </List.Item>
+
 
                             <List.Item>
                                 <div className="col-sm-12">

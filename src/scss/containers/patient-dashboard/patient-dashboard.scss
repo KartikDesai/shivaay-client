@@ -17,7 +17,7 @@
   & .patient__name {
     font-weight: 900;
     text-transform: uppercase;
-    margin: 0;
+    margin-bottom: 8px;
     line-height: 18px;
     font-size: 18px;
   }
@@ -35,8 +35,7 @@
   }
   & .patient-dashboard-header-right {
     display: grid;
-    grid-template-columns: 100%;
-    margin-top: -15px;
+    grid-template-columns: 30% 70%;
   }
 }
 
@@ -89,7 +88,13 @@
     }
     & .patient-dashboard-header-profile {
       display: grid;
-      grid-template-columns: 75% 25%;
+      grid-template-columns: 55% 45%;
+    }
+    & .patient-dashboard-header-right {
+      margin-top: -15px;
+    }
+    & .profile__data{
+      padding-left: 30px;
     }
   }
 }

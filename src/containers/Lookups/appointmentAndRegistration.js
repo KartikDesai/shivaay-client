@@ -173,6 +173,7 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                     <div className="form__form-group-field">
                                         <Form.Item name="phone">
                                             <MaskedInput mask="1111111111" name="phone"/>
+
                                         </Form.Item>
                                     </div>
                                 </div>
