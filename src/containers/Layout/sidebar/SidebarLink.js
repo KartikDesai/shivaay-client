@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Badge } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
@@ -21,14 +20,6 @@ const SidebarLink = ({
     </li>
   </NavLink>
 );
-
-SidebarLink.propTypes = {
-  title: PropTypes.string.isRequired,
-  icon: PropTypes.string,
-  newLink: PropTypes.bool,
-  route: PropTypes.string,
-  onClick: PropTypes.func,
-};
 
 SidebarLink.defaultProps = {
   icon: '',

@@ -52,7 +52,7 @@ const Medication = ({ onClose, encId }) => {
     };
 
     const modalMedicationsClasses = classNames({
-        'appointment-and-registration': true,
+        'modal-popup': true,
         'ltr-support': true,
         'medication': true
     });
@@ -280,7 +280,7 @@ const Medication = ({ onClose, encId }) => {
                 </Col>
             </ModalBody>
             <ModalFooter>
-                <Button disabled={savingMedications} color="primary" form="medication" type="submit" onClick={validateAndSaveMedication}
+                <Button disabled={savingMedications} color="primary" type="submit" onClick={validateAndSaveMedication}
                         ref={okRef}>
                         { savingMedications ? <Spin size="small" /> : 'OK' }
                 </Button>

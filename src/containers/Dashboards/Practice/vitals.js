@@ -26,7 +26,7 @@ const Vitals = ({ onClose, encId }) => {
     };
 
     const modelVitalsClasses = classNames({
-        'appointment-and-registration': true, // TODO add remark scss insted of appointment-and-regi..
+        'modal-popup': true, // TODO add remark scss insted of appointment-and-regi..
         'ltr-support': true,
         'medication': true
     });

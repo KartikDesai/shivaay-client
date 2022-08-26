@@ -36,7 +36,7 @@ const appointments = props => {
         setModal(prevState => !prevState);
     }
     const modalClasses = classnames({
-        'appointment-and-registration': true,
+        'modal-popup': true,
         'ltr-support': true,
         [theme.className]: true
     });

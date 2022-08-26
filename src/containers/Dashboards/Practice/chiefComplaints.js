@@ -25,7 +25,7 @@ const ChiefComplaint = ({ onClose, encId }) => {
     };
 
     const modalChiefComplaintsClasses = classNames({
-        'appointment-and-registration': true,
+        'modal-popup': true,
         'ltr-support': true,
         'medication': true
     });

@@ -68,7 +68,7 @@ const patientDashboard = props => {
             <Container className="dashboard">
                 <Row>
                     <Col md={12}>
-                        <h3 className="mb-2 patient-dashboard-header">Patient Dashboard</h3>
+                        <h3 className="mb-2 patient-dashboard-header bold-text">Patient Dashboard</h3>
                         <Col md={12} lg={12} xl={12} className="nopadding mb-2">
                             <Card>
                                 <CardBody className="profile__card">
