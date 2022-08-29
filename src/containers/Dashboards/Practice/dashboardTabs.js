@@ -19,7 +19,7 @@ const dashboardTabs = ({ encId, user }) => {
     const [vitalsModel, setVitalsModel] = useState(false);
     const [medications, setMedications] = useState(false);
     const [chiefComplaints, setChiefComplaints] = useState(false);
-    const [remarks, setRemarks] = useState(false);
+    const [remarks, setRemarks] = useState([]);
     const [vitals, setVitals] = useState(false);
 
 
@@ -131,6 +131,8 @@ const dashboardTabs = ({ encId, user }) => {
     useEffect(() => {
         toggle('medical-summary');     
     }, [])
+    
+    console.log(remarks);
 
     return (
         <div className="tabs tabs--justify tabs--bordered-top">
@@ -188,7 +190,7 @@ const dashboardTabs = ({ encId, user }) => {
                                             { medications && medications.length > 0 ? medications.map((medication, i) => {
                                                 return (
                                                     <div className="col-sm-12 nopadding medications">
-                                                        <div><strong>[{ i+1 }] </strong></div>
+                                                        <div><strong>{ i+1 }. </strong></div>
                                                         <div>{  medication.brandName } </div>
                                                         <div> { GujWords['freqCodes'][medication.freqCode]} ({ medication.freqCode.substring(0, medication.freqCode.length - 2) })  </div>
                                                         <div className="text-right"> ({ medication.duration }) </div>
@@ -208,7 +210,14 @@ const dashboardTabs = ({ encId, user }) => {
                                                 :<div><strong><span>Remarks</span></strong></div> }
                                         </div>
                                         <div className="col-sm-12 nopadding ml-2">
-                                            { remarks }
+                                            { remarks && remarks.length > 0 ? remarks.map((remark, i) => {
+                                                return (
+                                                    <div className="col-sm-12 nopadding medications">
+                                                        <div><strong>{ i+1 }. </strong></div>
+                                                        <div>{  remark } </div>
+                                                    </div>
+                                                )
+                                            }): ''}
                                         </div>
                                     </div>
                                     { remarksModel && <Remarks onClose={closeModalRemarks} onSubmit={onSubmit} encId={ encId }/> }

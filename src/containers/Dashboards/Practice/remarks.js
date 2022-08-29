@@ -58,7 +58,7 @@ const Remarks = ({ onClose, encId }) => {
     }
 
     useEffect(() => {
-        //getRemarks(encId);
+        getRemarks(encId);
     }, [])
 
     let remarksTable = "";
