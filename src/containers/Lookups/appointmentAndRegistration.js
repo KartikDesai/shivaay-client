@@ -1,9 +1,9 @@
 import React, {useEffect,  useState} from 'react';
 import {Button, Card, CardBody, Col, ModalBody, ModalFooter, ModalHeader,} from 'reactstrap';
 import { Form, Input, Radio, Select} from "antd";
-import MaskedInput from 'antd-mask-input'
 import DSelect from "../../shared/components/form/DSelect";
 import axios from "../../shared/axiosConfig";
+
 
 const { Option } = Select;
 
@@ -163,7 +163,15 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                 <div className="form__form-group">
                                     <span className="form__form-group-label">Age</span>
                                     <div className="form__form-group-field">
-                                        <Form.Item name="age">
+                                        <Form.Item name="age"
+                                                   rules={[
+                                                       {
+                                                           pattern: /^(?:\d*)$/,
+                                                           message: "Value should contain just positive number",
+
+                                                       }
+                                                   ]}
+                                        >
                                             <Input type="Number" maxLength="3" minLength="1"/>
                                         </Form.Item>
                                     </div>
@@ -171,9 +179,16 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                 <div className="form__form-group">
                                     <span className="form__form-group-label">Phone Number</span>
                                     <div className="form__form-group-field">
-                                        <Form.Item name="phone">
-                                            <MaskedInput mask="1111111111" name="phone"/>
+                                        <Form.Item name="phone"
+                                                   rules={[
+                                                       {
+                                                           pattern: /^(?:\d*)$/,
+                                                           message: "Value should contain just positive number",
 
+                                                       }
+                                                   ]}
+                                        >
+                                            <Input maxLength = "10" minLength="10"/>
                                         </Form.Item>
                                     </div>
                                 </div>

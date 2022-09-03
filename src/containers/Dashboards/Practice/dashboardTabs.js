@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Nav, NavItem, NavLink, TabContent, TabPane,} from 'reactstrap';
+import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import classnames from 'classnames';
 import {Form, Input, List} from "antd";
 import Medication from "./medications";
@@ -11,7 +11,8 @@ import {GujWords} from "../../../translations/resources";
 import {connect} from "react-redux";
 
 const dashboardTabs = ({ encId, user }) => {
-    const [followUp, setFollowUp] = useState(0);
+    const [followUp, setFollowUp] = useState(false);
+    const [followupDays,setFollowupDays] = useState('N/A');
     const [activeTab, setActiveTab] = useState(1);
     const [medicationModel, setMedicationModel] = useState(false);
     const [chiefComplaintModel, setChiefComplaintModel] = useState(false);
@@ -24,7 +25,6 @@ const dashboardTabs = ({ encId, user }) => {
 
 
     const [form] = Form.useForm();
-    const [preFollowupDays,setPreFollowupDays] = useState(0);
     const [pnSectionAccess, setPnSectionAccess] = useState(false);
 
     /* this is for force update */
@@ -77,16 +77,21 @@ const dashboardTabs = ({ encId, user }) => {
         }
     }, [user]);
 
+
     const onFollowupBlur = async() =>{
-        if(form.getFieldValue("days") !== preFollowupDays)
-        {
-            setPreFollowupDays(form.getFieldValue("days"));
+        if(form.getFieldValue("days") > 0){
+            setFollowupDays(form.getFieldValue("days") + ' Days');
             const res = await axios.post('saveAdvice', { encId: encId, followupAfter : form.getFieldValue("days") });
             if (res && res.data) {
-                setFollowUp(false);
-                // console.log('followup data saved on server')
+            }
+            else {
+                setFollowupDays('N/A');
             }
         }
+        else{
+            setFollowupDays('N/A');
+        }
+        setFollowUp(false);
     }
 
     const onSubmit = (module) => {
@@ -129,10 +134,10 @@ const dashboardTabs = ({ encId, user }) => {
     }
 
     useEffect(() => {
-        toggle('medical-summary');     
+        toggle('medical-summary');
     }, [])
-    
-    console.log(remarks);
+
+
 
     return (
         <div className="tabs tabs--justify tabs--bordered-top">
@@ -244,28 +249,27 @@ const dashboardTabs = ({ encId, user }) => {
                                         <div><strong><span >Advice</span></strong></div>
                                     </div>
                                     <div className="col-sm-12 ml-1 advice-followup" style={{
-                                        display: "grid",
-                                        gridTemplateColumns: '8% 5% 5% 85%'
+                                        //display: "grid",
+                                        //gridTemplateColumns: '8% 5% 5% 85%'
                                     }}>
                                             <div><label className="pr-1">Follow up after: </label></div>
                                             {followUp ?
                                                 <div>
-                                                        <Form form={form} name="folloup" onBlur={onFollowupBlur}  >
-                                                            <Form.Item
-                                                                name="days"
+                                                    <Form form={form} name="folloup" onBlur={onFollowupBlur}  >
+                                                        <Form.Item name="days"
                                                                 rules={[
                                                                     {
                                                                         pattern: /^(?:\d*)$/,
                                                                         message: "Value should contain just positive number",
                                                                     }
                                                                 ]}>
-                                                            <Input maxLength="2"/>
+                                                            <Input maxLength="2" />
                                                             </Form.Item>
                                                         </Form>
                                                 </div>
-                                                    : <label onClick={() => setFollowUp(true)}> {preFollowupDays && preFollowupDays > 0 ? preFollowupDays : 'N/A'} </label>
+                                                    : <label onClick={() => setFollowUp(true)} > {followupDays} </label>
                                             }
-                                            <div><label className="pl-1">Days </label></div>
+                                            {/*<div><label className="pl-1"> </label></div>*/}
                                     </div>
                                 </div>
                             </List.Item>

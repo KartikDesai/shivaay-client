@@ -3,23 +3,11 @@ import {Table} from 'antd';
 import {Button, Col, Container, Modal, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
 import classnames from "classnames";
 import AppointmentAndRegistration from "../../Lookups/appointmentAndRegistration";
+import AddVitals from "../../Lookups/addVitals";
 import axios from "../../../shared/axiosConfig";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../shared/components/withErrorHandler";
 import {Link} from "react-router-dom";
-
-const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name',render: (data,record) => <Link to={`/patientDashboard/${record.patientId}/${record.encId}`}>{data}</Link>},
-    { title: 'Age', dataIndex: 'age', key: 'age' },
-    { title: 'Chief Complaint', dataIndex: 'chiefComplaint', key: 'chiefComplaint' },
-    { title: 'Address', dataIndex: 'address', key: 'address' },
-    /*{
-        title: 'Action',
-        dataIndex: '',
-        key: 'x',
-        render: () => <a>Delete</a>,
-    },*/
-];
 
 const appointments = props => {
     const [modal, setModal] = useState(false);
@@ -28,19 +16,31 @@ const appointments = props => {
     const [encs, setEncs] = useState([]);
     const [activeTab, setActiveTab] = useState(1);
     const [myActiveAccess, setMyActiveAccess] = useState(false);
-    
     const {theme} = props;
     const {currentTab} = props.match.params;
     const tabs = ['my', 'all', 'past'];
-    const toggle = () => {
+    const [currentEncId, setCurrentEncId] = useState();
+    const toggle = (encId) => {
         setModal(prevState => !prevState);
+        setCurrentEncId(encId);
     }
     const modalClasses = classnames({
         'modal-popup': true,
         'ltr-support': true,
         [theme.className]: true
     });
-
+    const columns = [
+        { title: 'Name', dataIndex: 'name', key: 'name',render: (data,record) => <><Link to={`/patientDashboard/${record.patientId}/${record.encId}`}>{data} </Link><span className="lnr lnr-user" onClick={() => toggle(record.encId)}></span></>},
+        { title: 'Age', dataIndex: 'age', key: 'age' },
+        { title: 'Chief Complaint', dataIndex: 'chiefComplaint', key: 'chiefComplaint' },
+        { title: 'Address', dataIndex: 'address', key: 'address' },
+        /*{
+            title: 'Action',
+            dataIndex: '',
+            key: 'x',
+            render: () => <a>Delete</a>,
+        },*/
+    ];
     useEffect(() => {
         // TODO: check performance of number of calling
         // TODO: change the way permission checking happening
@@ -226,12 +226,15 @@ const appointments = props => {
                 toggle={toggle}
                 className={modalClasses}
             >
-                <AppointmentAndRegistration
+                <AddVitals
+                    encId = {currentEncId}
+                modelClose={modelClose}
+                />
+                {/*<AppointmentAndRegistration
                     chiefComplaints={chiefComplaints}
                     doctors={ doctors }
                     modelClose = {modelClose}
-
-                />
+                />*/}
             </Modal>
         </>
     );
