@@ -1,29 +1,30 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Button, Card, CardBody, Col, ModalBody, ModalFooter, ModalHeader,} from 'reactstrap';
 import { Form, Input} from "antd";
 import axios from "../../shared/axiosConfig";
 
 const addVitals = ({ modelClose, encId}) => {
     const [savingVitals, setSavingVitals] = useState(false);
+    const [vitalDict, setVitalDict] = useState([]);
 
     const saveVitals = async values => {
+        console.log(values);
         setSavingVitals(true);
-        const vitalsData = {
-            "encId" : encId,
-            "vitals": {
-                "height": values.height,
-                "weight": values.weight,
-                "bloodpressure": values.bloodpressure,
-                "pulse": values.pulse,
-                "spo2": values.spo2
-            }
-        }
-        const res = await axios.post('saveVitals', vitalsData);
+        const res = await axios.post(`saveVitals/${encId}`, values);
         setSavingVitals(false);
         if (res) {
             modelClose();
         }
     }
+    const getVitalDictionary = async vitalDictionary => {
+        const res = await axios.get("/vitalDictionary");
+        console.log(res.data);
+        setVitalDict(res.data);
+    }
+    useEffect(() => {
+        getVitalDictionary();
+    }, [])
+
     return (
         <>
             <ModalHeader>Add Vitals</ModalHeader>
@@ -34,46 +35,18 @@ const addVitals = ({ modelClose, encId}) => {
                             <Form  name="add-vitals" onFinish={saveVitals}
                                   className="form">
                                 <div className="form__half mr-4">
-                                    <div className="form__form-group">
-                                        <span className="form__form-group-label">Height</span>
-                                        <div className="form__form-group-field">
-                                            <Form.Item name="height">
-                                                <Input/>
-                                            </Form.Item>
-                                        </div>
-                                    </div>
-                                    <div className="form__form-group">
-                                        <span className="form__form-group-label">Weight</span>
-                                        <div className="form__form-group-field">
-                                            <Form.Item name="weight">
-                                                <Input/>
-                                            </Form.Item>
-                                        </div>
-                                    </div>
-                                    <div className="form__form-group">
-                                        <span className="form__form-group-label">Blood Pressure</span>
-                                        <div className="form__form-group-field">
-                                            <Form.Item name="bloodpressure">
-                                                <Input/>
-                                            </Form.Item>
-                                        </div>
-                                    </div>
-                                    <div className="form__form-group">
-                                        <span className="form__form-group-label">Pulse</span>
-                                        <div className="form__form-group-field">
-                                            <Form.Item name="pulse">
-                                                <Input />
-                                            </Form.Item>
-                                        </div>
-                                    </div>
-                                    <div className="form__form-group">
-                                        <span className="form__form-group-label">SPO2</span>
-                                        <div className="form__form-group-field">
-                                            <Form.Item name="spo2">
-                                                <Input />
-                                            </Form.Item>
-                                        </div>
-                                    </div>
+                                    { vitalDict && vitalDict.map((vital, i) => {
+                                        return (
+                                            <div className="form__form-group" key={i}>
+                                                <span className="form__form-group-label">{vital.displayname}</span>
+                                                <div className="form__form-group-field">
+                                                    <Form.Item name={vital.id}>
+                                                        <Input/>
+                                                    </Form.Item>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
                                 </div>
                             </Form>
                         </CardBody>

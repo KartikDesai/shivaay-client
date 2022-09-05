@@ -11,6 +11,7 @@ import {Link} from "react-router-dom";
 
 const appointments = props => {
     const [modal, setModal] = useState(false);
+    const [vitalModal, setVitalModal] = useState(false);
     const [chiefComplaints, setChiefComplaints] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [encs, setEncs] = useState([]);
@@ -20,8 +21,11 @@ const appointments = props => {
     const {currentTab} = props.match.params;
     const tabs = ['my', 'all', 'past'];
     const [currentEncId, setCurrentEncId] = useState();
-    const toggle = (encId) => {
+    const toggle = () => {
         setModal(prevState => !prevState);
+    }
+    const toggleVital = (encId) => {
+        setVitalModal(prevState => !prevState);
         setCurrentEncId(encId);
     }
     const modalClasses = classnames({
@@ -30,7 +34,7 @@ const appointments = props => {
         [theme.className]: true
     });
     const columns = [
-        { title: 'Name', dataIndex: 'name', key: 'name',render: (data,record) => <><Link to={`/patientDashboard/${record.patientId}/${record.encId}`}>{data} </Link><span className="lnr lnr-user" onClick={() => toggle(record.encId)}></span></>},
+        { title: 'Name', dataIndex: 'name', key: 'name',render: (data,record) => <><Link to={`/patientDashboard/${record.patientId}/${record.encId}`}>{data} </Link><span className="lnr lnr-user" onClick={() => toggleVital(record.encId)}></span></>},
         { title: 'Age', dataIndex: 'age', key: 'age' },
         { title: 'Chief Complaint', dataIndex: 'chiefComplaint', key: 'chiefComplaint' },
         { title: 'Address', dataIndex: 'address', key: 'address' },
@@ -55,6 +59,10 @@ const appointments = props => {
     const modelClose =()=> {
         setModal(false);
         getEncounters(activeTab);
+    }
+
+    const vitalModelClose =()=> {
+        setVitalModal(false);
     }
 
     const getEncounters = async (tab) => {
@@ -222,19 +230,27 @@ const appointments = props => {
             <Modal
                 backdrop="static"
                 keyboard={false}                
-                isOpen={modal}
-                toggle={toggle}
+                isOpen={vitalModal}
+                toggle={toggleVital}
                 className={modalClasses}
             >
                 <AddVitals
                     encId = {currentEncId}
-                modelClose={modelClose}
+                    modelClose={vitalModelClose}
                 />
-                {/*<AppointmentAndRegistration
+            </Modal>
+            <Modal
+                backdrop="static"
+                keyboard={false}
+                isOpen={modal}
+                toggle={toggle}
+                className={modalClasses}
+            >
+                <AppointmentAndRegistration
                     chiefComplaints={chiefComplaints}
                     doctors={ doctors }
                     modelClose = {modelClose}
-                />*/}
+                />
             </Modal>
         </>
     );

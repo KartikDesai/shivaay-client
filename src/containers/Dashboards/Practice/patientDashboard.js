@@ -98,7 +98,7 @@ const patientDashboard = props => {
                         </Col>
                         <Card>
                             <CardBody className="dashboard__sections">
-                                <DashboardTabs encId={ encId } />
+                                <DashboardTabs encId={ encId } patientId={patientId} />
                             </CardBody>
                         </Card>
                     </Col>

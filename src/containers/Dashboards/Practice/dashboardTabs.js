@@ -9,9 +9,10 @@ import Remarks from "./remarks";
 import Vitals from "./vitals";
 import {GujWords} from "../../../translations/resources";
 import {connect} from "react-redux";
+import VitalsTable from './vitalsTable'
 
-const dashboardTabs = ({ encId, user }) => {
-    const [followUp, setFollowUp] = useState(false);
+const dashboardTabs = ({ encId, user, patientId }) => {
+    const [followUp, setFollowUp] = useState(0);
     const [followupDays,setFollowupDays] = useState('N/A');
     const [activeTab, setActiveTab] = useState(1);
     const [medicationModel, setMedicationModel] = useState(false);
@@ -21,8 +22,7 @@ const dashboardTabs = ({ encId, user }) => {
     const [medications, setMedications] = useState(false);
     const [chiefComplaints, setChiefComplaints] = useState(false);
     const [remarks, setRemarks] = useState([]);
-    const [vitals, setVitals] = useState(false);
-
+    const [vitals, setVitals] = useState({});
 
     const [form] = Form.useForm();
     const [pnSectionAccess, setPnSectionAccess] = useState(false);
@@ -134,9 +134,19 @@ const dashboardTabs = ({ encId, user }) => {
     }
 
     useEffect(() => {
-        toggle('medical-summary');
+        toggle('medical-summary');     
     }, [])
 
+    const getVitalsByPatientId = async (patientId) => {
+        const res = await axios.get(`/getVitals/${patientId}` );
+        if (res) {
+            setVitals(res.data);
+        }
+    }
+
+    useEffect(() => {
+        getVitalsByPatientId(patientId);
+    }, [])
 
 
     return (
@@ -217,10 +227,12 @@ const dashboardTabs = ({ encId, user }) => {
                                         <div className="col-sm-12 nopadding ml-2">
                                             { remarks && remarks.length > 0 ? remarks.map((remark, i) => {
                                                 return (
-                                                    <div className="col-sm-12 nopadding medications">
-                                                        <div><strong>{ i+1 }. </strong></div>
-                                                        <div>{  remark } </div>
-                                                    </div>
+                                                    remark && remark.trim() !== "" ?
+                                                        <div className="col-sm-12 nopadding medications">
+                                                            <div><strong>{ i+1 }. </strong></div>
+                                                            <div>{  remark } </div>
+                                                        </div>
+                                                    : ''
                                                 )
                                             }): ''}
                                         </div>
@@ -228,7 +240,7 @@ const dashboardTabs = ({ encId, user }) => {
                                     { remarksModel && <Remarks onClose={closeModalRemarks} onSubmit={onSubmit} encId={ encId }/> }
                                 </List.Item>
 
-                                <List.Item>
+                                <List.Item className="patient-dashboard-vitals">
                                     <div className="col-sm-12">
                                         <div className="col-sm-12 nopadding flex-space-between uppercase">
                                             { pnSectionAccess ?
@@ -236,10 +248,14 @@ const dashboardTabs = ({ encId, user }) => {
                                                 :<div><strong><span>Vitals</span></strong></div> }
                                         </div>
                                         <div className="col-sm-12 nopadding ml-2">
-                                            { vitals }
+                                            { vitals && vitals.capturedVitals && vitals.vitalsDictionary &&
+                                                <VitalsTable
+                                                    capturedVitals={vitals.capturedVitals}
+                                                    vitalsDictionary={vitals.vitalsDictionary}
+                                                /> }
                                         </div>
                                     </div>
-                                    { vitalsModel && <Vitals onClose={closeModalVitals()} onSubmit={onSubmit} encId={ encId }/> }
+                                    { vitalsModel && <Vitals onClose={closeModalVitals} onSubmit={onSubmit} patientId={ patientId }/> }
                                 </List.Item>
 
 

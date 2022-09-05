@@ -27,7 +27,7 @@ const Remarks = ({ onClose, encId }) => {
     };
 
     const modelRemarksClasses = classNames({
-        'modal-popup': true, // TODO add remark scss insted of appointment-and-regi..
+        'modal-popup-medium': true, // TODO add remark scss insted of appointment-and-regi..
         'ltr-support': true,
         'medication': true
     });
@@ -37,7 +37,6 @@ const Remarks = ({ onClose, encId }) => {
     }
 
     const addRemark = (value) => {
-        console.log(value);
         if (value && value.remark && value.remark.trim() !== "") {
             setRemarks(remarks.concat(value.remark));
         }
@@ -74,15 +73,17 @@ const Remarks = ({ onClose, encId }) => {
                 <tbody>
                 {remarks.map((remark, index) => {
                     return (
-                        <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{remark}</td>
-                            <td>
-                                <button onClick={() => deleteRemark(index)} className="close button-tooltip">
-                                    <span className="lnr lnr-trash"/>
-                                </button>
-                            </td>
-                        </tr>
+                        remark && remark.trim() !== "" ?
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{remark}</td>
+                                <td>
+                                    <button onClick={() => deleteRemark(index)} className="close button-tooltip">
+                                        <span className="lnr lnr-trash"/>
+                                    </button>
+                                </td>
+                            </tr>
+                            : ''
                     )
                 })}
                 </tbody>
@@ -90,7 +91,6 @@ const Remarks = ({ onClose, encId }) => {
         )
     }
 
-    console.log(remarks);
     return (
         <Modal
             backdrop="static"
@@ -107,7 +107,7 @@ const Remarks = ({ onClose, encId }) => {
                             <Form form={form} name="add-remarks" onFinish={addRemark} className="form">
                                 <div className="form__form-group">
                                     <Row>
-                                        <Col md={6} lg={6}>
+                                        <Col md={10} lg={10}>
                                             <span className="form__form-group-label">Remarks</span>
                                             <div className="form__form-group-field">
                                                 <Form.Item name="remark">

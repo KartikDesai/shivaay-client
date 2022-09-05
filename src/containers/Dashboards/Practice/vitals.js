@@ -5,10 +5,12 @@ import classNames from "classnames";
 import axios from '../../../shared/axiosConfig'
 import withErrorHandler from "../../../shared/components/withErrorHandler";
 import useCtrlEnter from "../../../shared/hooks/ctrl-enter-hook";
+import { getTimeInClientTimeZone } from '../../../shared/utility';
+import VitalsTable from "./vitalsTable";
 
-const Vitals = ({ onClose, encId }) => {
+const Vitals = ({ onClose, encId, patientId }) => {
     const [modelVitals, setModelVitals] = useState(true);
-    const [vitals, setVitals] = useState([]);
+    const [vitals, setVitals] = useState({});
     const [form] = Form.useForm();
     const { TextArea } = Input;
     const okRef = useRef(null)
@@ -39,6 +41,22 @@ const Vitals = ({ onClose, encId }) => {
         onReset();
     }
 
+    const getVitalsByPatientId = async (patientId) => {
+        const res = await axios.get(`/getVitals/${patientId}` );
+        if (res) {
+            console.log(res.data);
+            setVitals(res.data);
+        }
+    }
+    const getVitalValue = (date, vitalIdToMatch) => {
+        const foundVital = vitals.capturedVitals[date].find( v => vitalIdToMatch == v.vitalid)
+        return foundVital && foundVital.value ? foundVital.value : ''
+    }
+
+    useEffect(() => {
+        getVitalsByPatientId(patientId);
+    }, [])
+
 
     return (
         <Modal
@@ -48,49 +66,29 @@ const Vitals = ({ onClose, encId }) => {
             toggle={toggleModelVitals}
             className={modelVitalsClasses}
         >
-            <ModalHeader>Add Remarks</ModalHeader>
+            <ModalHeader>Add Vitals</ModalHeader>
             <ModalBody>
                 <Col md={12} lg={12} className="nopadding">
                     <Card>
                         <CardBody>
-                            <Form form={form} name="add-remarks" onFinish={addVitals} className="form">
+                            <Form form={form} name="add-vitals" onFinish={addVitals} className="form">
                                 <div className="form__form-group">
                                     <Row>
-                                        <Col md={6} lg={6}>
-                                            <span className="form__form-group-label">Remarks</span>
-                                            <div className="form__form-group-field">
-                                                <Form.Item name="remarks">
-                                                    <TextArea/>
-                                                </Form.Item>
-                                            </div>
-                                        </Col>
-
-                                        <Col md={1} lg={1} className="nopadding">
-                                            <button className="btn btn-xs btn-primary add-button" type="submit">
-                                                Add
-                                            </button>
-                                        </Col>
+                                        { vitals && vitals.capturedVitals && vitals.vitalsDictionary &&
+                                        <VitalsTable
+                                            capturedVitals={vitals.capturedVitals}
+                                            vitalsDictionary={vitals.vitalsDictionary}
+                                        /> }
                                     </Row>
                                 </div>
                             </Form>
                         </CardBody>
                     </Card>
                 </Col>
-                <Col md={12} lg={12} className="nopadding">
-                    <Card>
-                        <CardBody>
-
-                        </CardBody>
-                    </Card>
-                </Col>
             </ModalBody>
             <ModalFooter>
-                <Button  color="primary" form="medication" type="submit" onClick={saveVitals}
-                         ref={okRef}>
-                    OK
-                </Button>
                 <Button color="secondary" onClick={onClose}>
-                    Cancel
+                    Close
                 </Button>
             </ModalFooter>
         </Modal>
