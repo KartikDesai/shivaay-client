@@ -13,7 +13,8 @@ import VitalsTable from './vitalsTable'
 
 const dashboardTabs = ({ encId, user, patientId }) => {
     const [followUp, setFollowUp] = useState(0);
-    const [followupDays,setFollowupDays] = useState('N/A');
+    const [followupDays,setFollowupDays] = useState(0   );
+
     const [activeTab, setActiveTab] = useState(1);
     const [medicationModel, setMedicationModel] = useState(false);
     const [chiefComplaintModel, setChiefComplaintModel] = useState(false);
@@ -79,20 +80,34 @@ const dashboardTabs = ({ encId, user, patientId }) => {
 
 
     const onFollowupBlur = async() =>{
-        if(form.getFieldValue("days") > 0){
-            setFollowupDays(form.getFieldValue("days") + ' Days');
-            const res = await axios.post('saveAdvice', { encId: encId, followupAfter : form.getFieldValue("days") });
+        let days = form.getFieldValue("days");
+        if(days >= 0){
+            const res = await axios.post('saveAdvice', { encId: encId, followupAfter : days });
             if (res && res.data) {
+                setFollowupDays(days);
             }
             else {
-                setFollowupDays('N/A');
+                setFollowupDays(0);
             }
         }
         else{
-            setFollowupDays('N/A');
+            setFollowupDays(0);
         }
         setFollowUp(false);
+
     }
+    const getFollowupDaysByEncId = async (encId) => {
+
+        const res = await axios.get(`/getAdvice/${encId}` );
+        if (res) {
+            console.log('res data ' + res.data);
+            setFollowupDays(res.data);
+        }
+    }
+
+    useEffect(()=> {
+            getFollowupDaysByEncId(encId);
+    },[]);
 
     const onSubmit = (module) => {
         closeModalMedications();
@@ -147,8 +162,6 @@ const dashboardTabs = ({ encId, user, patientId }) => {
     useEffect(() => {
         getVitalsByPatientId(patientId);
     }, [])
-
-
     return (
         <div className="tabs tabs--justify tabs--bordered-top">
             <div className="tabs__wrap">
@@ -283,7 +296,7 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                                             </Form.Item>
                                                         </Form>
                                                 </div>
-                                                    : <label onClick={() => setFollowUp(true)} > {followupDays} </label>
+                                                    : <label onClick={() => setFollowUp(true)} > {followupDays > 0 ? `${followupDays} Days` : 'N/A'} </label>
                                             }
                                             {/*<div><label className="pl-1"> </label></div>*/}
                                     </div>
