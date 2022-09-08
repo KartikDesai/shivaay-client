@@ -194,8 +194,8 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                     <div className="col-sm-12">
                                         <div className="col-sm-12 nopadding flex-space-between uppercase">
                                             { pnSectionAccess ?
-                                            <div><strong><span onClick={openModalChiefComplaint}>Chief Complaints</span></strong></div>
-                                                :<div><strong><span>Chief Complaints</span></strong></div> }
+                                            <div><strong><span onClick={openModalChiefComplaint}>C/O - Diagnosis</span></strong></div>
+                                                :<div><strong><span>C/O - Diagnosis</span></strong></div> }
                                             {/*<div>25/02/2021</div>*/}
                                         </div>
                                         <div className="col-sm-12 nopadding ml-2">
@@ -209,7 +209,7 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                     <div className="col-sm-12">
                                         <div className="col-sm-12 nopadding flex-space-between uppercase">
                                             { pnSectionAccess ?
-                                                <div><strong><span onClick={openModalMedications}>Medications</span></strong></div>
+                                                <div><strong><span onClick={openModalMedications}><i className="fnt16 rx-symbol fas fa-prescription"></i> <span className="medication-label">Medications</span></span></strong></div>
                                                 : <div><strong><span>Medications</span></strong></div> }
 
                                             {/*<div>25/02/2021</div>*/}
@@ -220,7 +220,7 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                                     <div className="col-sm-12 nopadding medications">
                                                         <div><strong>{ i+1 }. </strong></div>
                                                         <div>{  medication.brandName } </div>
-                                                        <div> { GujWords['freqCodes'][medication.freqCode]} ({ medication.freqCode.substring(0, medication.freqCode.length - 2) })  </div>
+                                                        <div> { GujWords['freqCodes'][medication.freqCode]} <span className="freqCodes">({ medication.freqCode.substring(0, medication.freqCode.length - 2) }) </span> </div>
                                                         <div className="text-right"> ({ medication.duration }) </div>
                                                     </div>
                                                 )
@@ -274,20 +274,16 @@ const dashboardTabs = ({ encId, user, patientId }) => {
 
                             <List.Item>
                                 <div className="col-sm-12">
-                                    <div className="col-sm-12 nopadding" style={{display: "flex", justifyContent: "space-between", textTransform:"uppercase"}}>
+                                    {/*<div className="col-sm-12 nopadding" style={{display: "flex", justifyContent: "space-between", textTransform:"uppercase"}}>
                                         <div><strong><span >Advice</span></strong></div>
-                                    </div>
-                                    <div className="col-sm-12 ml-1 advice-followup" style={{
-                                        //display: "grid",
-                                        //gridTemplateColumns: '8% 5% 5% 85%'
-                                    }}>
-                                            <div><label className="pr-1">Follow up after: </label></div>
+                                    </div>*/}
+                                    <div className="col-sm-12 ml-1 advice-followup">
+                                            <div>Follow up after:</div>
                                             {followUp ?
                                                 <div>
                                                     <Form form={form} name="folloup" onBlur={onFollowupBlur}  >
                                                         <Form.Item name="days"
-                                                                rules={[
-                                                                    {
+                                                                rules={[ {
                                                                         pattern: /^(?:\d*)$/,
                                                                         message: "Value should contain just positive number",
                                                                     }
@@ -302,18 +298,6 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                     </div>
                                 </div>
                             </List.Item>
-
-                                {/*<List.Item>
-                                    <div className="col-sm-12">
-                                        <div className="col-sm-12" style={{display: "flex", justifyContent: "space-between", textTransform:"uppercase"}}>
-                                            <div><strong>Advice</strong></div>
-                                            <div>25/02/2021</div>
-                                        </div>
-                                        <div className="col-sm-12 ml-2">
-                                            Avoid alcohol and cold food
-                                        </div>
-                                    </div>
-                                </List.Item>*/}
                             </List>
                         </TabPane>
                         <TabPane tabId='past-visits' className="p-3">

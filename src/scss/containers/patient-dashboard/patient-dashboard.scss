@@ -1,4 +1,7 @@
 .patient-dashboard {
+  & .patient-dashboard-main {
+    height: calc(100% - 120px);
+  }
  & .patient-detail-matrix {
    flex-basis: 0;
    flex-grow: 1;
@@ -11,7 +14,9 @@
   }
   & .footer-buttons {
     position: fixed;
-    bottom: 10px;
+    bottom: 0;
+    padding-bottom: 5px;
+    background-color: white;
   }
 
   & .patient__name {
@@ -23,7 +28,7 @@
   }
   & .medications {
     display: inline-grid;
-    grid-template-columns: 3% 40% 40% 17%;
+    grid-template-columns: 2% 40% 40% 18%;
   }
   & .advice-followup {
     display: grid;
@@ -37,12 +42,12 @@
     display: grid;
     grid-template-columns: 30% 70%;
   }
+  & .freqCodes {
+    font-weight: lighter;
+  }
 }
 
 @media print {
-  * {
-    font-size: 28px;
-  }
   .patient-dashboard {
     & .patient__name {
       font-size: 28px!important;
@@ -53,7 +58,7 @@
       padding-left: 10px!important;
     }
     & .profile__card {
-      margin-top: 300px;
+      margin-top: 180px;
     }
     & .patient-detail-matrix {
       display: flex;
@@ -69,7 +74,9 @@
       .patient-detail-matrix-refby,
       .patient-headset,
       .patient-address,
-      .patient-dashboard-vitals
+      .patient-dashboard-vitals,
+      .patient-dashboard-header-right-refby,
+      .medication-label
     {
       display: none!important;
     }
@@ -78,7 +85,7 @@
     }
     & .medications {
       display: inline-grid;
-      grid-template-columns: 5% 40% 40% 15%;
+      grid-template-columns: 3% 30% 55% 12%;
     }
     & .profile__card {
       border-bottom: 1px solid #666;
@@ -86,16 +93,33 @@
     & .advice-followup {
       display: grid;
       grid-template-columns: 25% 10% 10%!important;
+      padding-left: 0!important;
+      font-weight: bolder;
     }
     & .patient-dashboard-header-profile {
       display: grid;
       grid-template-columns: 55% 45%;
     }
     & .patient-dashboard-header-right {
-      margin-top: -15px;
     }
     & .profile__data{
       padding-left: 30px;
+    }
+    & .patient-dashboard-header-right p {
+      line-height: 1.2;
+    }
+    & .ant-spin-container li:nth-child(1) {
+      padding-top: 0;
+    }
+    & .patient__name {
+      font-size: 18px!important;
+    }
+    & .tab-pane {
+      padding-left: 25px!important;
+    }
+    & .rx-symbol { font-size: 26px!important; }
+    & .patient-dashboard-header-left-id {
+      margin-left: 10px;
     }
   }
 }

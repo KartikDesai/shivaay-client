@@ -8,6 +8,7 @@ import {GujWords} from '../../../translations/resources'
 import useCtrlEnter from "../../../shared/hooks/ctrl-enter-hook";
 import DSelect from "../../../shared/components/form/DSelect";
 import notify from "../../../shared/components/notification/notification";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 const { Option } = Select;
 
@@ -152,35 +153,37 @@ const Medication = ({ onClose, encId }) => {
     let medicationTable = "";
     if (medications.length > 0) {
         medicationTable = (
-            <Table striped responsive>
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Brand Name</th>
-                    <th>Frequency</th>
-                    <th>Duration</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {medications.filter(medication => !medication['deleted']).map((medication, index) => {
-                    return (
-                        <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{medication.brandName}</td>
-                            <td className="gj-fnt-14">{GujWords['freqCodes'][medication.freqCode]}</td>
-                            <td>{medication.duration} Days</td>
-                            <td>
-                                <button onClick={() => deleteMedication(medication.medId, index)}
-                                        className="close button-tooltip">
-                                    <span className="lnr lnr-trash"/>
-                                </button>
-                            </td>
-                        </tr>
-                    )
-                })}
-                </tbody>
-            </Table>
+            /*<PerfectScrollbar style={{ height: '300px'}}>*/
+                <Table striped responsive>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Brand Name</th>
+                        <th>Frequency</th>
+                        <th>Duration</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {medications.filter(medication => !medication['deleted']).map((medication, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{medication.brandName}</td>
+                                <td className="gj-fnt-14">{GujWords['freqCodes'][medication.freqCode]}</td>
+                                <td>{medication.duration} Days</td>
+                                <td>
+                                    <button onClick={() => deleteMedication(medication.medId, index)}
+                                            className="close button-tooltip">
+                                        <span className="lnr lnr-trash"/>
+                                    </button>
+                                </td>
+                            </tr>
+                        )
+                    })}
+                    </tbody>
+                </Table>
+            /*</PerfectScrollbar>*/
         )
     }
 
@@ -216,8 +219,7 @@ const Medication = ({ onClose, encId }) => {
                                                         {
                                                             drugs.map((drug, index) => {
                                                                 return (
-                                                                    <Option key={index} value={drug.id}
-                                                                            label={drug.brandName}>
+                                                                    <Option key={index} value={drug.id} label={drug.brandName}>
                                                                         {drug.brandName}
                                                                     </Option>
                                                                 );

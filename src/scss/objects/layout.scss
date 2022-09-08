@@ -2,7 +2,7 @@
 
   @media screen and (min-width: 768px) {
     width: 100%;
-    max-width: 1630px;
+    max-width: 1665px;
   }
 }
 
@@ -11,6 +11,7 @@
     #{directed('padding-left')}: 0px;
   }
   padding-top: 70px;
+  padding-bottom: 40px;
   min-height: 100vh;
   transition: padding-left 0.3s;
 
@@ -20,7 +21,7 @@
 
   @media screen and (min-width: 576px) {
     @include directify($directions) {
-      #{directed('padding-left')}: 250px;
+      #{directed('padding-left')}: 240px;
     }
   }
   h3 {

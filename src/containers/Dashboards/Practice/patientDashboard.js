@@ -67,7 +67,7 @@ const patientDashboard = props => {
         <div className="patient-dashboard"  ref={componentRef}>
             <Container className="dashboard">
                 <Row>
-                    <Col md={12}>
+                    <Col md={12} lg={12} xl={12}>
                         <h3 className="mb-2 patient-dashboard-header bold-text">Patient Dashboard</h3>
                         <Col md={12} lg={12} xl={12} className="nopadding mb-2">
                             <Card>
@@ -77,6 +77,7 @@ const patientDashboard = props => {
                                             <div className="patient-dashboard-header-profile">
                                                 <div className="patient-dashboard-header-left">
                                                     <p className="patient__name">{ `${enc.fname} ${enc.lname}`} { `${ enc.age }Y, `}{ enc.sex === "M" ? "M": "F" }</p>
+                                                    <p className="patient-dashboard-header-left-id bold-text">{  `ID: ${enc.patientUuid}` }</p>
                                                     <div className="patient-headset">
                                                         <span className="lnr lnr-phone-handset" style={{marginTop: '2px', float: 'left', paddingRight: '3px'}}></span><p className="profile__work"> { enc.phone }</p>
                                                     </div>
@@ -85,10 +86,10 @@ const patientDashboard = props => {
                                                     </div>
                                                 </div>
                                                 <div className="patient-dashboard-header-right">
-                                                    <span><strong>Date:</strong></span><span>  { moment(enc.starttime).format("DD/MM/YYYY") }</span>
-                                                    <span><strong>Ref. By:</strong>  </span><span>{ enc.refby }</span>
-                                                    <span><strong>Doctor:</strong>  </span><span>Dr { `${enc.doctorFname} ${enc.doctorLname}` }</span>
-                                                    <span></span><span className="doctor-speciality">({enc.speciality})</span>
+                                                    <p><strong>Date:</strong></p><p> { moment(enc.starttime).format("DD/MM/YYYY") }</p>
+                                                    <p className="patient-dashboard-header-right-refby"><strong>Ref. By:</strong>  </p><p className="patient-dashboard-header-right-refby">{ enc.refby }</p>
+                                                    <p><strong>Doctor:</strong>  </p><p>Dr { `${enc.doctorFname} ${enc.doctorLname}` }</p>
+                                                    <p></p><p className="doctor-speciality">({enc.speciality})</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -96,13 +97,15 @@ const patientDashboard = props => {
                                 </CardBody>
                             </Card>
                         </Col>
-                        <Card>
-                            <CardBody className="dashboard__sections">
-                                <DashboardTabs encId={ encId } patientId={patientId} />
-                            </CardBody>
-                        </Card>
+                        <Col md={12} lg={12} xl={12} className="nopadding mb-2 patient-dashboard-main">
+                            <Card>
+                                <CardBody className="dashboard__sections">
+                                    <DashboardTabs encId={ encId } patientId={patientId} />
+                                </CardBody>
+                            </Card>
+                        </Col>
                     </Col>
-                    <Col md={12} className="footer-buttons">
+                    <Col md={12} lg={12} xl={12} className="footer-buttons">
                         <button
                             type="button"
                             className="btn btn-xs btn-primary"

@@ -28,12 +28,12 @@ function DSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
     return (
         <Select
             showSearch
-            labelInValue
             filterOption={false}
             onSearch={debounceFetcher}
             notFoundContent={fetching ? <Spin size="small" /> : null}
             {...props}
             options={options}
+
         />
     );
 } // Usage of DebounceSelect

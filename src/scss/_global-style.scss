@@ -69,13 +69,22 @@
 }
 
 .doctor-speciality {
-  font-size: 11px;
+  font-size: 13px;
   color: $color-dark-gray;
 }
 
 @media print {
+  * {
+    font-size: 18px;
+  }
   .doctor-speciality {
-    font-size: 13px;
+    font-size: 16px;
     color: $color-dark-gray;
   }
 }
+
+.fnt12 { font-size: 12px; }
+.fnt13 { font-size: 13px; }
+.fnt14 { font-size: 14px; }
+.fnt15 { font-size: 15px; }
+.fnt16 { font-size: 16px; }

@@ -7,7 +7,9 @@ import i18next from "i18next";
 import ScrollToTop from "./ScrollToTop";
 import Loading from "../../shared/components/Loading";
 import {hot} from "react-hot-loader";
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import 'bootstrap/dist/css/bootstrap.css';
+
 import '../../scss/app.scss';
 import { config as i18nextConfig } from '../../translations';
 import Router from './Router';
