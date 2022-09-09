@@ -7,21 +7,7 @@ import withErrorHandler from "../../shared/components/withErrorHandler";
 import axios from "../../shared/axiosConfig";
 import AddDrug from "../Admin/addDrug";
 
-const columns = [
-    { title: 'Brand Name', dataIndex: 'brandName', key: 'brandName'},
-    { title: 'Content', dataIndex: 'content', key: 'content' },
-    { title: 'Company Name', dataIndex: 'company', key: 'company' },
-    { title: 'Code', dataIndex: 'code', key: 'code' },
-    { title: 'Generic', dataIndex: 'generic', key: 'generic' },
-    { title: 'Type', dataIndex: 'type', key: 'type' },
 
-    /*{
-        title: 'Action',
-        dataIndex: '',
-        key: 'x',
-        render: () => <a>Delete</a>,
-    },*/
-];
 
 const drugs = (props)=> {
     const [modal, setModal] = useState(false);
@@ -33,6 +19,24 @@ const drugs = (props)=> {
         [theme.className]: true
     });
 
+    const columns = [
+        { title: 'Brand Name', dataIndex: 'brandName', key: 'brandName'},
+        { title: 'Content', dataIndex: 'content', key: 'content' },
+        { title: 'Company Name', dataIndex: 'company', key: 'company' },
+        { title: 'Code', dataIndex: 'code', key: 'code' },
+        { title: 'Generic', dataIndex: 'generic', key: 'generic' },
+        { title: 'Type', dataIndex: 'type', key: 'type' },
+        {title: 'Action',dataIndex: '',key: 'id',render: (record) =>
+                <button className="lnr lnr-user" onClick = {() => del (record.id)}>Delete</button>
+        },
+    ];
+    const del = (id)=>{
+        deleteDrug(id);
+    }
+    const deleteDrug = async (id) => {
+        const res = await axios.get(`deleteDrug/${id}` );
+        if (res) { getDrugs(); }
+    }
     const modelClose = (res) => {
         setModal(false);
         getDrugs();
@@ -73,6 +77,7 @@ const drugs = (props)=> {
                                     code : drug.code,
                                     generic : drug.generic,
                                     type : drug.type,
+                                    id : drug.id
 
                                 }
                             ))}

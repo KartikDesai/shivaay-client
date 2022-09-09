@@ -7,17 +7,7 @@ import withErrorHandler from "../../shared/components/withErrorHandler";
 import axios from "../../shared/axiosConfig";
 import AddChiefComplaint from "../Admin/addChiefComplaint";
 
-const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name'},
-    { title: 'Description', dataIndex: 'description', key: 'description' },
 
-    /*{
-        title: 'Action',
-        dataIndex: '',
-        key: 'x',
-        render: () => <a>Delete</a>,
-    },*/
-];
 
 const chiefComplaints = (props)=> {
     const [modal, setModal] = useState(false);
@@ -29,6 +19,20 @@ const chiefComplaints = (props)=> {
         [theme.className]: true
     });
 
+    const columns = [
+        { title: 'Name', dataIndex: 'name', key: 'name'},
+        { title: 'Description', dataIndex: 'description', key: 'description' },
+        {title: 'Action',dataIndex: '',key: 'id',render: (record) =>
+                <button className="lnr lnr-user" onClick = {() => del (record.id)}>Delete</button>
+        },
+    ];
+    const del = (id)=>{
+        deleteChiefComplaint(id);
+    }
+    const deleteChiefComplaint = async (id) => {
+        const res = await axios.get(`deleteChiefComplaint/${id}` );
+        if (res) {  getChiefComplaint();}
+    }
     const modelClose = (res) => {
         setModal(false);
         getChiefComplaint();
@@ -65,7 +69,7 @@ const chiefComplaints = (props)=> {
                                     key: i,
                                     name: chiefComplaint.name,
                                     description : chiefComplaint.description,
-
+                                    id : chiefComplaint.id
                                 }
                             ))}
                         />

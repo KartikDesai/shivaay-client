@@ -7,20 +7,6 @@ import withErrorHandler from "../../shared/components/withErrorHandler";
 import axios from "../../shared/axiosConfig";
 import AddDoctor from "../Admin/addDoctor";
 
-const columns = [
-    { title: 'Name', dataIndex: 'name', key: 'name'},
-    { title: 'Speciality', dataIndex: 'speciality', key: 'speciality' },
-    { title: 'Contact No.', dataIndex: 'phone', key: 'contactno' },
-    { title: 'Gender', dataIndex: 'sex', key: 'gender' },
-    { title: 'Address', dataIndex: 'address', key: 'address' },
-    /*{
-        title: 'Action',
-        dataIndex: '',
-        key: 'x',
-        render: () => <a>Delete</a>,
-    },*/
-];
-
 const doctors = (props)=> {
     const [modal, setModal] = useState(false);
     const [doctors, setDoctors] = useState([]);
@@ -30,6 +16,24 @@ const doctors = (props)=> {
         'ltr-support': true,
         [theme.className]: true
     });
+
+    const columns = [
+        { title: 'Name', dataIndex: 'name', key: 'name'},
+        { title: 'Speciality', dataIndex: 'speciality', key: 'speciality' },
+        { title: 'Contact No.', dataIndex: 'phone', key: 'contactno' },
+        { title: 'Gender', dataIndex: 'sex', key: 'gender' },
+        { title: 'Address', dataIndex: 'address', key: 'address' },
+        {title: 'Action',dataIndex: '',key: 'id',render: (record) =>
+                <button className="lnr lnr-user" onClick = {() => del (record.id)}>Delete</button>
+        },
+    ];
+    const del = (id)=>{
+        deleteDoctor(id);
+    }
+    const deleteDoctor = async (id) => {
+        const res = await axios.get(`deleteDoctor/${id}` );
+        if (res) { getDoctors(); }
+    }
 
     const modelClose = () => {
         setModal(false);
@@ -70,6 +74,7 @@ const doctors = (props)=> {
                                     phone: doctor.phone,
                                     sex : doctor.sex,
                                     address: doctor.address1,
+                                    id : doctor.id
                                 }
                             ))}
                         />
