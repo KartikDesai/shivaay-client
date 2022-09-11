@@ -232,7 +232,15 @@ const AppointmentAndRegistration = ({ modelClose, chiefComplaints, doctors}) => 
                                 <div className="form__form-group">
                                     <span className="form__form-group-label">Doctor</span>
                                     <div className="form__form-group-field">
-                                        <Form.Item name="concerneddoctor">
+                                        <Form.Item name="concerneddoctor"
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: 'Please input doctor!',
+                                                       },
+                                                   ]}
+
+                                        >
                                             <Select
                                                 showSearch
                                                 placeholder="Select a Doctor"
