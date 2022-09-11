@@ -2,7 +2,7 @@
 
   @media screen and (min-width: 768px) {
     width: 100%;
-    max-width: 1665px;
+    max-width: 100%;
   }
 }
 
@@ -40,7 +40,7 @@
 
       @media screen and (min-width: 576px) {
         @include directify($directions) {
-          #{directed('padding-left')}: 60px;
+          #{directed('padding-left')}: 55px;
         }
       }
     }

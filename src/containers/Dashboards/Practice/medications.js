@@ -8,7 +8,7 @@ import {GujWords} from '../../../translations/resources'
 import useCtrlEnter from "../../../shared/hooks/ctrl-enter-hook";
 import DSelect from "../../../shared/components/form/DSelect";
 import notify from "../../../shared/components/notification/notification";
-import PerfectScrollbar from "react-perfect-scrollbar";
+import {EnterOutlined} from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -27,26 +27,65 @@ const Medication = ({ onClose, encId }) => {
     useCtrlEnter(okRef);
 
     const validateAndSaveMedication = () => {
-        if (!medications || medications.length === 0) {
-            onClose();
-            return;
-        }
-        if (medications.findIndex(m => m.deleted || m.medId === 0) > -1) {
-            saveMedication();
-        } else {
-            onClose();
-        }
+        // TODO: Validation
+        saveMedication();
     }
+
+    const prepareMedicationDataToSave = () => {
+        const medicationDataToSave = [];
+        for (let i = 0; i < medications.length; i++) {
+            let medication = medications[i];
+            if((medication.medId === 0 && !medication.deleted) || (medication.medId > 0 && medication.deleted)){
+                // Add if newly added (not deleted) or
+                // if old deleted (deleted)
+                medicationDataToSave.push({
+                    'medId': medication.medId,
+                    'id': medication.id,
+                    'freqCodeId': medication.freqCodeId,
+                    'duration': medication.duration,
+                    'deleted': medication.deleted || false,
+                    displayOrder: 0
+                })
+            }
+            if (!medication.children) {
+                continue;
+            }
+            for (let j = 0; j < medication.children.length; j++) {
+                let childMedication = medication.children[j];
+                if((childMedication.medId === 0 && !childMedication.deleted) || (childMedication.medId > 0 && childMedication.deleted)){
+                    medicationDataToSave.push({
+                        'medId': childMedication.medId,
+                        'id': childMedication.id,
+                        'freqCodeId': childMedication.freqCodeId,
+                        'duration': childMedication.duration,
+                        'deleted': childMedication.deleted,
+                        displayOrder: childMedication.displayOrder
+                    });
+                }
+            }
+        }
+        setSavingMedications(false);
+        return medicationDataToSave;
+    };
 
     const saveMedication = async () => {
         setSavingMedications(true);
-        const res = await axios.post('medication/save', { encId: encId, medications: medications });
+        const medicationDataToSave = prepareMedicationDataToSave(medications);
+        if (medicationDataToSave && medicationDataToSave.length === 0) {
+            closeMedicationScreen();
+        }
+        const res = await axios.post('medication/save', { encId: encId, medications: medicationDataToSave });
         setSavingMedications(false);
         if (res && res.data) {
-            form.resetFields();
-            onClose();
+            closeMedicationScreen();
         }
     };
+
+    const closeMedicationScreen = () => {
+        form.resetFields();
+        onClose();
+    };
+
     const onReset = () => {
         setAddingDrug(false);
         form.resetFields();
@@ -99,9 +138,31 @@ const Medication = ({ onClose, encId }) => {
         let indexToBeDeleted  = medId === 0 ? index : medications.findIndex(medication => medication.medId === medId);
         const updatedMedications = [...medications];
         if (medId === 0) {
-            updatedMedications.splice(index, 1);
+            // delete newly added parent-children
+            updatedMedications.splice(indexToBeDeleted, 1);
         } else {
-            updatedMedications[indexToBeDeleted] = {...updatedMedications[indexToBeDeleted], deleted: true };
+            let medicationToDelete = updatedMedications[indexToBeDeleted];
+
+            // delete all child
+            if (medicationToDelete.children && medicationToDelete.children.length > 0) {
+                for (let i = 0; i < medicationToDelete.children.length; i++) {
+                    let childMedication = medicationToDelete.children[i];
+                    if (childMedication.medId === 0) {
+                        // new child medication
+                        updatedMedications.splice(indexToBeDeleted, 1);
+                    } else {
+                        // old child medication
+                        medicationToDelete.children[i] = { medId: childMedication.medId, deleted: true };
+                    }
+                }
+            }
+
+            // delete parent
+            updatedMedications[indexToBeDeleted] = {
+                medId: updatedMedications[indexToBeDeleted].medId,
+                deleted: true,
+                children: updatedMedications[indexToBeDeleted].children
+            };
         }
         setMedications(updatedMedications);
     }
@@ -139,13 +200,31 @@ const Medication = ({ onClose, encId }) => {
             return;
         }
         let freqCode = freqCodes.find(freqCode => freqCode.id === medication.freqCodeId);
-        setMedications(medications.concat({
-            ...(!isNewDrug ? drugs.find(drug => drug.id === medication.drugId.value): { id: addedDrugId, brandName: brandName}),
-            freqCode: freqCode.code,
-            freqCodeId: medication.freqCodeId,
-            duration: medication.duration,
-            medId: 0 // For newly added medication,
-        }));
+        let medicationIndex = medications.findIndex(m => m.id == medication.drugId.value && !m.deleted);
+        if (medicationIndex > -1) {
+            // If drug is already added, then add drug as a child
+            let updatedMedications = [...medications];
+            let children = updatedMedications[medicationIndex]['children'] || [];
+            children.push({
+                ...(!isNewDrug ? drugs.find(drug => drug.id === medication.drugId.value): { id: addedDrugId, brandName: brandName}),
+                freqCode: freqCode.code,
+                freqCodeId: medication.freqCodeId,
+                duration: medication.duration,
+                displayOrder: children.length + 1,
+                medId: 0 // For newly added medication,
+            })
+            updatedMedications[medicationIndex]['children'] = children;
+            setMedications(updatedMedications);
+        } else {
+            setMedications(medications.concat({
+                ...(!isNewDrug ? drugs.find(drug => drug.id === medication.drugId.value): { id: addedDrugId, brandName: brandName}),
+                freqCode: freqCode.code,
+                freqCodeId: medication.freqCodeId,
+                duration: medication.duration,
+                medId: 0 // For newly added medication,
+            }));
+        }
+
         onReset();
         // setBrandNameFocus();
     }
@@ -167,18 +246,31 @@ const Medication = ({ onClose, encId }) => {
                     <tbody>
                     {medications.filter(medication => !medication['deleted']).map((medication, index) => {
                         return (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{medication.brandName}</td>
-                                <td className="gj-fnt-14">{GujWords['freqCodes'][medication.freqCode]}</td>
-                                <td>{medication.duration} Days</td>
-                                <td>
-                                    <button onClick={() => deleteMedication(medication.medId, index)}
-                                            className="close button-tooltip">
-                                        <span className="lnr lnr-trash"/>
-                                    </button>
-                                </td>
-                            </tr>
+                            <>
+                                <tr key={index}>
+                                    <td className="bold-text">{index + 1}</td>
+                                    <td className="bold-text brandname">{medication.brandName}</td>
+                                    <td className="gj-fnt-14">{GujWords['freqCodes'][medication.freqCode]}</td>
+                                    <td>{medication.duration} Days</td>
+                                    <td>
+                                        <button onClick={() => deleteMedication(medication.medId, index)}
+                                                className="close button-tooltip">
+                                            <span className="lnr lnr-trash"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                                { medication.children && medication.children.filter(child => !child['deleted']).map((child, cIndex) => {
+                                    return (
+                                        <tr key={`${index}-${cIndex}`}>
+                                            <td></td>
+                                            <td className="flex flex-column-reverse"><EnterOutlined style={{ fontSize: "16px", transform: "rotateY(180deg)"}} /></td>
+                                            <td className="gj-fnt-14">{`${GujWords['afterthat']}  ${GujWords['freqCodes'][child.freqCode]}`}</td>
+                                            <td>{child.duration} Days</td>
+                                            <td></td>
+                                        </tr>
+                                    )
+                                })}
+                            </>
                         )
                     })}
                     </tbody>
@@ -215,6 +307,7 @@ const Medication = ({ onClose, encId }) => {
                                                         placeholder="Search Drug"
                                                         fetchOptions={fetchDrugs}
                                                         onChange={handleChange}
+                                                        labelInValue
                                                     >
                                                         {
                                                             drugs.map((drug, index) => {

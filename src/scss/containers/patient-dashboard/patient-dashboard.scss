@@ -15,7 +15,7 @@
   & .footer-buttons {
     position: fixed;
     bottom: 0;
-    padding-bottom: 5px;
+    padding: 10px 10px;
     background-color: white;
   }
 
@@ -32,7 +32,7 @@
   }
   & .advice-followup {
     display: grid;
-    grid-template-columns: 8% 5% 5% 85%
+    grid-template-columns: 10% 5%
   }
   & .patient-dashboard-header-profile {
     display: grid;
@@ -43,7 +43,17 @@
     grid-template-columns: 30% 70%;
   }
   & .freqCodes {
-    font-weight: lighter;
+    color: $color-dark-gray;
+  }
+  & .advice-followup-print {
+    display: none;
+  }
+  & .section-medications div:last-child {
+    border-bottom: none;
+  }
+  & .section-header {
+    color: $color-blue-dark;
+    text-transform: uppercase;
   }
 }
 
@@ -92,13 +102,13 @@
     }
     & .advice-followup {
       display: grid;
-      grid-template-columns: 25% 10% 10%!important;
+      grid-template-columns: 40% auto;
       padding-left: 0!important;
       font-weight: bolder;
     }
     & .patient-dashboard-header-profile {
       display: grid;
-      grid-template-columns: 55% 45%;
+      grid-template-columns: 70% 30%;
     }
     & .patient-dashboard-header-right {
     }
@@ -117,9 +127,17 @@
     & .tab-pane {
       padding-left: 25px!important;
     }
-    & .rx-symbol { font-size: 26px!important; }
+    & .rx-symbol { font-size: 22px!important; }
+    & .comment-symbol { font-size: 22px!important; }
     & .patient-dashboard-header-left-id {
       margin-left: 10px;
+    }
+    & .advice-followup {
+      display: none;
+    }
+    & .advice-followup-print {
+      display: inline;
+      font-weight: bolder;
     }
   }
 }

@@ -1,4 +1,5 @@
 .medication {
+
   & .add-medication-icon {
     font-size: 26px;
     font-weight: 700;
@@ -6,6 +7,10 @@
   }
 
   & .add-button {
-    margin-top: 18px;
+    top: 25px;
   }
+}
+
+.brandname {
+  text-transform: uppercase;
 }

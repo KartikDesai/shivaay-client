@@ -68,7 +68,7 @@ const patientDashboard = props => {
             <Container className="dashboard">
                 <Row>
                     <Col md={12} lg={12} xl={12}>
-                        <h3 className="mb-2 patient-dashboard-header bold-text">Patient Dashboard</h3>
+                        {/*<h3 className="mb-2 patient-dashboard-header bold-text">Patient Dashboard</h3>*/}
                         <Col md={12} lg={12} xl={12} className="nopadding mb-2">
                             <Card>
                                 <CardBody className="profile__card">
@@ -88,7 +88,7 @@ const patientDashboard = props => {
                                                 <div className="patient-dashboard-header-right">
                                                     <p><strong>Date:</strong></p><p> { moment(enc.starttime).format("DD/MM/YYYY") }</p>
                                                     <p className="patient-dashboard-header-right-refby"><strong>Ref. By:</strong>  </p><p className="patient-dashboard-header-right-refby">{ enc.refby }</p>
-                                                    <p><strong>Doctor:</strong>  </p><p>Dr { `${enc.doctorFname} ${enc.doctorLname}` }</p>
+                                                    <p><strong>Doctor:</strong>  </p><p><strong>Dr { `${enc.doctorFname} ${enc.doctorLname}` }</strong></p>
                                                     <p></p><p className="doctor-speciality">({enc.speciality})</p>
                                                 </div>
                                             </div>
@@ -105,7 +105,7 @@ const patientDashboard = props => {
                             </Card>
                         </Col>
                     </Col>
-                    <Col md={12} lg={12} xl={12} className="footer-buttons">
+                    <Col md={12} lg={12} xl={12} className="footer-buttons border-top">
                         <button
                             type="button"
                             className="btn btn-xs btn-primary"

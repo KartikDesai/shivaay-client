@@ -70,19 +70,22 @@ $color-violet: #c88ffa;
 $color-red: #ff4861;
 $color-red-hover: darken($color-red, 10%);
 
-$color-blue: #70bbfd;
-$color-blue-hover: darken($color-blue, 10%);
+$color-blue: #0052ccbd;
+$color-blue: #0052ccbd;
+$color-blue-hover: darken($color-blue, 5%);
 
-$color-blue-dark: #096dd9;
+$color-blue-dark: #0055cc;
 $color-blue-dark-hover: darken($color-blue-dark, 10%);
 
 $color-gray: #787985;
 $color-light-gray: #d8dfe9;
+$color-lightest-gray: #efefef;
+
 
 $color-green: #b8e986;
 $color-green-hover: darken($color-green, 10%);
 
-$color-dark-gray:  #333;
+$color-dark-gray:  darkgray;
 
 $directions: (
   ltr: (

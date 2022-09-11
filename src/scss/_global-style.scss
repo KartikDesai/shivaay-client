@@ -70,7 +70,7 @@
 
 .doctor-speciality {
   font-size: 13px;
-  color: $color-dark-gray;
+  color: $color-gray!important;
 }
 
 @media print {
@@ -78,8 +78,15 @@
     font-size: 18px;
   }
   .doctor-speciality {
-    font-size: 16px;
-    color: $color-dark-gray;
+    font-size: 16px!important;;
+    color: #787985!important;;
+    font-weight: 700!important;
+  }
+  .hide-in-print {
+    display: none!important;
+  }
+  .gj-fnt-14 {
+    font-size: 18px;
   }
 }
 
@@ -88,3 +95,7 @@
 .fnt14 { font-size: 14px; }
 .fnt15 { font-size: 15px; }
 .fnt16 { font-size: 16px; }
+
+.border-lightest {
+  border-bottom: 0.5px solid $color-lightest-gray;
+}

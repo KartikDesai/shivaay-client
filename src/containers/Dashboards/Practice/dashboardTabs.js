@@ -10,6 +10,7 @@ import Vitals from "./vitals";
 import {GujWords} from "../../../translations/resources";
 import {connect} from "react-redux";
 import VitalsTable from './vitalsTable'
+import {getTabletCount, stringFormat, isBlank} from "../../../shared/utility";
 
 const dashboardTabs = ({ encId, user, patientId }) => {
     const [followUp, setFollowUp] = useState(0);
@@ -109,7 +110,7 @@ const dashboardTabs = ({ encId, user, patientId }) => {
             getFollowupDaysByEncId(encId);
     },[]);
 
-    const onSubmit = (module) => {
+    const onSubmit = () => {
         closeModalMedications();
         forceUpdate();
     }
@@ -159,9 +160,34 @@ const dashboardTabs = ({ encId, user, patientId }) => {
         }
     }
 
+    const vitalClasses = ['patient-dashboard-vitals'];
+    if (!vitals || !vitals.capturedVitals || Object.keys(vitals.capturedVitals).length === 0) {
+        vitalClasses.push('hide-in-print');
+    }
+
+    const chiefComplaintClasses = [];
+    if (isBlank(chiefComplaints)) {
+        chiefComplaintClasses.push('hide-in-print');
+    }
+
+    const medicationsClasses = [];
+    if (!medications || medications.length === 0) {
+        medicationsClasses.push('hide-in-print');
+    }
+
+    const remarksClasses = [];
+    if (!remarks || remarks.length === 0) {
+        remarksClasses.push('hide-in-print');
+    }
+
+    const followupClasses = ['advice-followup-print'];
+    if (!followupDays || followupDays <= 0) {
+        followupClasses.push('hide-in-print');
+    }
+
     useEffect(() => {
         getVitalsByPatientId(patientId);
-    }, [])
+    }, []);
     return (
         <div className="tabs tabs--justify tabs--bordered-top">
             <div className="tabs__wrap">
@@ -190,9 +216,9 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                     <TabContent activeTab={activeTab}>
                         <TabPane tabId='medical-summary' className="p-3 nopadtop">
                             <List className="nopadding">
-                                <List.Item>
+                                <List.Item className={chiefComplaintClasses.join(' ')}>
                                     <div className="col-sm-12">
-                                        <div className="col-sm-12 nopadding flex-space-between uppercase">
+                                        <div className="col-sm-12 nopadding section-header">
                                             { pnSectionAccess ?
                                             <div><strong><span onClick={openModalChiefComplaint}>C/O - Diagnosis</span></strong></div>
                                                 :<div><strong><span>C/O - Diagnosis</span></strong></div> }
@@ -205,63 +231,69 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                     { chiefComplaintModel && <ChiefComplaint onClose={closeModalChiefComplaint} onSubmit={onSubmit} encId={ encId }/> }
                                 </List.Item>
 
-                                <List.Item>
-                                    <div className="col-sm-12">
-                                        <div className="col-sm-12 nopadding flex-space-between uppercase">
+                                <List.Item className={medicationsClasses.join(' ')}>
+                                    <div className="col-sm-12 section-medications">
+                                        <div className="col-sm-12 nopadding section-header">
+                                            <div><strong>
+                                                <i className="fnt16 rx-symbol fas fa-prescription"></i>
                                             { pnSectionAccess ?
-                                                <div><strong><span onClick={openModalMedications}><i className="fnt16 rx-symbol fas fa-prescription"></i> <span className="medication-label">Medications</span></span></strong></div>
-                                                : <div><strong><span>Medications</span></strong></div> }
-
+                                                <span onClick={openModalMedications}> <span className="medication-label"> Medications</span></span>
+                                                : <span> Medications</span> }
+                                            </strong></div>
                                             {/*<div>25/02/2021</div>*/}
                                         </div>
                                         <div className="col-sm-12 nopadding ml-2">
-                                            { medications && medications.length > 0 ? medications.map((medication, i) => {
+                                            { medications && medications.length > 0 ? medications.map((medication, index) => {
                                                 return (
-                                                    <div className="col-sm-12 nopadding medications">
-                                                        <div><strong>{ i+1 }. </strong></div>
-                                                        <div>{  medication.brandName } </div>
-                                                        <div> { GujWords['freqCodes'][medication.freqCode]} <span className="freqCodes">({ medication.freqCode.substring(0, medication.freqCode.length - 2) }) </span> </div>
-                                                        <div className="text-right"> ({ medication.duration }) </div>
-                                                    </div>
-                                                )
+                                                    <div className="border-lightest pt-2">
+                                                        <div className="col-sm-12 nopadding medications" key={`${index}`}>
+                                                            <div><strong>{ index+1 }. </strong></div>
+                                                            <div className="brandname bold-text">{  medication.brandName } </div>
+                                                            <div className="gj-fnt-14">
+                                                                { `${GujWords['freqCodes'][medication.freqCode]} `}
+                                                                { medication.freqCode !== "SOS" ? `${ medication.duration } ${GujWords['days']}`: ''}
+                                                                <span className="freqCodes">
+                                                                    { medication.freqCode !== "SOS" ? `(${medication.freqCode.substring(0, medication.freqCode.length - 2)})` : '' }
+                                                                </span>
+                                                            </div>
+                                                            <div className="text-right">
+                                                                { medication.freqCode !== "SOS" ? `(${ getTabletCount(medication.duration, medication.freqCode) })` : "" }
+                                                            </div>
+                                                        </div>
+
+                                                        { medication && medication.children && medication.children.length > 0 ? medication.children.map((childMedication, cIndex) => {
+                                                            return (
+                                                                <div className="col-sm-12 nopadding medications" key={`${index}-${cIndex}`}>
+                                                                    <div></div>
+                                                                    <div></div>
+                                                                    <div className="gj-fnt-14">
+                                                                        {`${GujWords['afterthat']} ${GujWords['freqCodes'][childMedication.freqCode]}`}
+                                                                        { childMedication.freqCode !== "SOS" ? `${ childMedication.duration } ${GujWords['days']}`: ''}
+                                                                        <span className="freqCodes">{ childMedication.freqCode !== "SOS" ? `(${ childMedication.freqCode.substring(0, childMedication.freqCode.length - 2) })` : '' } </span>
+                                                                    </div>
+                                                                    <div className="text-right">
+                                                                        { childMedication.freqCode !== "SOS" ? `(${ getTabletCount(childMedication.duration, childMedication.freqCode) })` : "" }
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        }
+                                                        ): ''}
+                                                    </div>)
                                             }): ''}
                                         </div>
                                     </div>
                                     { medicationModel && <Medication onClose={closeModalMedications} onSubmit={onSubmit} encId={ encId }/> }
                                 </List.Item>
 
-                                <List.Item>
+                                <List.Item className={vitalClasses.join(' ')} >
                                     <div className="col-sm-12">
-                                        <div className="col-sm-12 nopadding flex-space-between uppercase">
-                                            { pnSectionAccess ?
-                                                <div><strong><span onClick={openModalRemarks}>Remarks</span></strong></div>
-                                                :<div><strong><span>Remarks</span></strong></div> }
-                                        </div>
-                                        <div className="col-sm-12 nopadding ml-2">
-                                            { remarks && remarks.length > 0 ? remarks.map((remark, i) => {
-                                                return (
-                                                    remark && remark.trim() !== "" ?
-                                                        <div className="col-sm-12 nopadding medications">
-                                                            <div><strong>{ i+1 }. </strong></div>
-                                                            <div>{  remark } </div>
-                                                        </div>
-                                                    : ''
-                                                )
-                                            }): ''}
-                                        </div>
-                                    </div>
-                                    { remarksModel && <Remarks onClose={closeModalRemarks} onSubmit={onSubmit} encId={ encId }/> }
-                                </List.Item>
-
-                                <List.Item className="patient-dashboard-vitals">
-                                    <div className="col-sm-12">
-                                        <div className="col-sm-12 nopadding flex-space-between uppercase">
+                                        <div className="col-sm-12 nopadding section-header">
                                             { pnSectionAccess ?
                                                 <div><strong><span onClick={openModalVitals}>Vitals</span></strong></div>
                                                 :<div><strong><span>Vitals</span></strong></div> }
                                         </div>
                                         <div className="col-sm-12 nopadding ml-2">
-                                            { vitals && vitals.capturedVitals && vitals.vitalsDictionary &&
+                                            { vitals && vitals.capturedVitals && vitals.vitalsDictionary && Object.keys(vitals.capturedVitals).length > 0 &&
                                                 <VitalsTable
                                                     capturedVitals={vitals.capturedVitals}
                                                     vitalsDictionary={vitals.vitalsDictionary}
@@ -271,13 +303,38 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                     { vitalsModel && <Vitals onClose={closeModalVitals} onSubmit={onSubmit} patientId={ patientId }/> }
                                 </List.Item>
 
+                                <List.Item className={remarksClasses.join(' ')}>
+                                    <div className="col-sm-12">
+                                        <div className="col-sm-12 nopadding section-header">
+                                            <div><strong>
+                                            { pnSectionAccess ?
+                                                <span onClick={openModalRemarks}>Remarks</span>
+                                                :<span>Remarks</span> }
+                                            </strong></div>
+                                        </div>
+                                        <div className="col-sm-12 nopadding ml-2">
+                                            <ul>
+                                            { remarks && remarks.length > 0 ? remarks.map((remark, i) => {
+                                                return (
+                                                    <li>
+                                                        { remark && remark.trim() !== "" ?
+                                                            <div className="col-sm-12 nopadding">
+                                                                {remark}
+                                                            </div>
 
-                            <List.Item>
+                                                            : ''}
+                                                    </li>
+                                                )
+                                            }): ''}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    { remarksModel && <Remarks onClose={closeModalRemarks} onSubmit={onSubmit} encId={ encId }/> }
+                                </List.Item>
+
+                                <List.Item>
                                 <div className="col-sm-12">
-                                    {/*<div className="col-sm-12 nopadding" style={{display: "flex", justifyContent: "space-between", textTransform:"uppercase"}}>
-                                        <div><strong><span >Advice</span></strong></div>
-                                    </div>*/}
-                                    <div className="col-sm-12 ml-1 advice-followup">
+                                    <div className="col-sm-12 nopadleft advice-followup">
                                             <div>Follow up after:</div>
                                             {followUp ?
                                                 <div>
@@ -295,6 +352,9 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                                     : <label onClick={() => setFollowUp(true)} > {followupDays > 0 ? `${followupDays} Days` : 'N/A'} </label>
                                             }
                                             {/*<div><label className="pl-1"> </label></div>*/}
+                                    </div>
+                                    <div className={followupClasses.join(' ')}>
+                                        {` ${stringFormat(GujWords['followUp'], [followupDays])}` }
                                     </div>
                                 </div>
                             </List.Item>

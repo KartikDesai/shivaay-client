@@ -1,8 +1,8 @@
 .btn {
   border-radius: 5px;
-  padding: 10px 25px;
+  padding: 4px 10px;
   @include directify($directions) {
-    #{directed('margin-right')}: 15px;
+    #{directed('margin-right')}: 5px;
   }
   transition: all 0.4s;
   font-size: 14px;
@@ -109,12 +109,12 @@
   }
 
   &.btn-sm {
-    padding: 5px 25px;
+    padding: 4px 10px;
     font-size: 14px;
   }
 
   &.btn-lg {
-    padding: 12px 25px;
+    padding: 5px 12px;
     font-size: 14px;
   }
 

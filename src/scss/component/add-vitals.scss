@@ -1,0 +1,8 @@
+.vital-form {
+  display: grid;
+  grid-template-columns: 48% 50%;
+  width: 100%;
+  & .ant-form-item-control:nth-child(odd) {
+    margin-right: 15px;
+  }
+}

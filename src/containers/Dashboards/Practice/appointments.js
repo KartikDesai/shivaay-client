@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table} from 'antd';
+import {Progress, Table} from 'antd';
 import {Button, Col, Container, Modal, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
 import classnames from "classnames";
 import AppointmentAndRegistration from "../../Lookups/appointmentAndRegistration";
@@ -8,6 +8,9 @@ import axios from "../../../shared/axiosConfig";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../shared/components/withErrorHandler";
 import {Link} from "react-router-dom";
+import {CircularProgress} from "@material-ui/core";
+import {InfoCircleOutlined} from "@ant-design/icons";
+import TrashButton from "../../../shared/components/form/TrashButton";
 
 const appointments = props => {
     const [modal, setModal] = useState(false);
@@ -33,17 +36,23 @@ const appointments = props => {
         'ltr-support': true,
         [theme.className]: true
     });
+    const vitalModalClasses = classnames({
+        'modal-popup-medium': true,
+        'ltr-support': true,
+        [theme.className]: true
+    });
     const columns = [
-        { title: 'Name', dataIndex: 'name', key: 'name',render: (data,record) => <><Link to={`/patientDashboard/${record.patientId}/${record.encId}`}>{data} </Link><span className="lnr lnr-user" onClick={() => toggleVital(record.encId)}></span></>},
+        { title: 'Name', dataIndex: 'name', key: 'name',render: (data,record) => <><Link to={`/patientDashboard/${record.patientId}/${record.encId}`}>{data}  </Link>
+                <InfoCircleOutlined style={{color: "#ff4861", marginTop: "-2px"}} onClick={() => toggleVital(record.encId)}/></>},
         { title: 'Age', dataIndex: 'age', key: 'age' },
         { title: 'Chief Complaint', dataIndex: 'chiefComplaint', key: 'chiefComplaint' },
         { title: 'Address', dataIndex: 'address', key: 'address' },
-        /*{
-            title: 'Action',
+        {
+            title: '',
             dataIndex: '',
             key: 'x',
-            render: () => <a>Delete</a>,
-        },*/
+            render: () => <TrashButton />,
+        }
     ];
     useEffect(() => {
         // TODO: check performance of number of calling
@@ -232,7 +241,7 @@ const appointments = props => {
                 keyboard={false}                
                 isOpen={vitalModal}
                 toggle={toggleVital}
-                className={modalClasses}
+                className={vitalModalClasses}
             >
                 <AddVitals
                     encId = {currentEncId}

@@ -3,6 +3,7 @@
   "version": "2.4.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.5.0",
     "@auth0/auth0-spa-js": "^1.2.3",
     "@fortawesome/fontawesome-free": "^5.15.2",
     "@material-ui/core": "^3.9.2",

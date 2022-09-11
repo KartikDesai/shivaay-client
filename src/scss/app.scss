@@ -4,7 +4,7 @@
 @import './vendor';
 
 @import '~antd/dist/antd.css';
-@import '../scss/component/antd-datepicker-custom';
+@import 'src/scss/component/antd-custom';
 
 // font-awesome
 @import url("https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
@@ -69,6 +69,9 @@
 @import './component/load';
 @import './component/customizer';
 @import './component/input.scss';
+
+//custom
+@import 'component/add-vitals';
 
 //pages...
 @import 'containers/account';              // pages/account/* (except profile)

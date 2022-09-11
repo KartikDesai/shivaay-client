@@ -6,9 +6,9 @@ import axios from "../../shared/axiosConfig";
 const addVitals = ({ modelClose, encId}) => {
     const [savingVitals, setSavingVitals] = useState(false);
     const [vitalDict, setVitalDict] = useState([]);
+    const [vitalsForm] = Form.useForm();
 
     const saveVitals = async values => {
-        console.log(values);
         setSavingVitals(true);
         const res = await axios.post(`saveVitals/${encId}`, values);
         setSavingVitals(false);
@@ -16,14 +16,27 @@ const addVitals = ({ modelClose, encId}) => {
             modelClose();
         }
     }
-    const getVitalDictionary = async vitalDictionary => {
-        const res = await axios.get("/vitalDictionary");
-        console.log(res.data);
-        setVitalDict(res.data);
+    const getVitalsByEncId = async (encId) => {
+        const res = await axios.get(`/getVitalsByEncId/${encId}` );
+        if (res && res.data) {
+            if (res.data.vitalsDictionary) {
+                setVitalDict(res.data.vitalsDictionary);
+            }
+            if (!res.data.capturedVitals || res.data.capturedVitals.length === 0) {
+                return;
+            }
+            for (let i = 0; i < res.data.capturedVitals.length; i++) {
+                let capturedVital = res.data.capturedVitals[i];
+                vitalsForm.setFieldsValue({
+                    [capturedVital.vitalid]: capturedVital.value
+                })
+            }
+        }
     }
+
     useEffect(() => {
-        getVitalDictionary();
-    }, [])
+        getVitalsByEncId(encId);
+    }, [encId])
 
     return (
         <>
@@ -32,13 +45,12 @@ const addVitals = ({ modelClose, encId}) => {
                 <Col md={12} lg={12} className="nopadding">
                     <Card>
                         <CardBody>
-                            <Form  name="add-vitals" onFinish={saveVitals}
-                                  className="form">
-                                <div className="form__half mr-4">
+                            <Form form={vitalsForm} name="add-vitals" onFinish={saveVitals} className="form">
+                                <div className="vital-form">
                                     { vitalDict && vitalDict.map((vital, i) => {
                                         return (
-                                            <div className="form__form-group" key={i}>
-                                                <span className="form__form-group-label">{vital.displayname}</span>
+                                            <div className="form__form-group mr-2" key={i}>
+                                                <span className="form__form-group-label bold-text">{vital.displayname}</span>
                                                 <div className="form__form-group-field">
                                                     <Form.Item name={vital.id}>
                                                         <Input/>
@@ -62,7 +74,6 @@ const addVitals = ({ modelClose, encId}) => {
                 </Button>
             </ModalFooter>
         </>
-
     )
 }
 export default addVitals;
