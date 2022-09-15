@@ -68,7 +68,7 @@
       padding-left: 10px!important;
     }
     & .profile__card {
-      margin-top: 180px;
+      margin-top: 145px;
     }
     & .patient-detail-matrix {
       display: flex;
@@ -113,7 +113,7 @@
     & .patient-dashboard-header-right {
     }
     & .profile__data{
-      padding-left: 30px;
+      padding-left: 40px;
     }
     & .patient-dashboard-header-right p {
       line-height: 1.2;
@@ -123,9 +123,10 @@
     }
     & .patient__name {
       font-size: 18px!important;
+      color: rgba(0,0,0,0.85);
     }
     & .tab-pane {
-      padding-left: 25px!important;
+      padding-left: 35px!important;
     }
     & .rx-symbol { font-size: 22px!important; }
     & .comment-symbol { font-size: 22px!important; }
@@ -138,6 +139,10 @@
     & .advice-followup-print {
       display: inline;
       font-weight: bolder;
+    }
+    & .section-header {
+      font-weight: bold;
+      color: rgba(0,0,0,0.85);
     }
   }
 }

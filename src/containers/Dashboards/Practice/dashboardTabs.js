@@ -267,7 +267,8 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                                                     <div></div>
                                                                     <div></div>
                                                                     <div className="gj-fnt-14">
-                                                                        {`${GujWords['afterthat']} ${GujWords['freqCodes'][childMedication.freqCode]}`}
+                                                                        { childMedication.freqCode !== "SOS" ? `${GujWords['afterthat']}`: ''}
+                                                                        {` ${GujWords['freqCodes'][childMedication.freqCode]} `}
                                                                         { childMedication.freqCode !== "SOS" ? `${ childMedication.duration } ${GujWords['days']}`: ''}
                                                                         <span className="freqCodes">{ childMedication.freqCode !== "SOS" ? `(${ childMedication.freqCode.substring(0, childMedication.freqCode.length - 2) })` : '' } </span>
                                                                     </div>
@@ -308,8 +309,8 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                         <div className="col-sm-12 nopadding section-header">
                                             <div><strong>
                                             { pnSectionAccess ?
-                                                <span onClick={openModalRemarks}>Remarks</span>
-                                                :<span>Remarks</span> }
+                                                <span onClick={openModalRemarks}>Advice</span>
+                                                :<span>Advice</span> }
                                             </strong></div>
                                         </div>
                                         <div className="col-sm-12 nopadding ml-2">

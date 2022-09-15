@@ -88,8 +88,13 @@
   .gj-fnt-14 {
     font-size: 18px;
   }
+  .ant-list-split .ant-list-item {
+    border-bottom: 1px solid #dddddd!important;
+  }
 }
 
+.fnt10 { font-size: 10px; }
+.fnt11 { font-size: 11px; }
 .fnt12 { font-size: 12px; }
 .fnt13 { font-size: 13px; }
 .fnt14 { font-size: 14px; }
@@ -98,4 +103,13 @@
 
 .border-lightest {
   border-bottom: 0.5px solid $color-lightest-gray;
+}
+
+.light-gray-italic {
+  color: $color-gray;
+  font-style: italic;
+}
+
+.fnt-weight-400 {
+  font-weight: 400;
 }

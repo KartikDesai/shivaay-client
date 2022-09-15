@@ -9,6 +9,7 @@ import useCtrlEnter from "../../../shared/hooks/ctrl-enter-hook";
 import DSelect from "../../../shared/components/form/DSelect";
 import notify from "../../../shared/components/notification/notification";
 import {EnterOutlined} from "@ant-design/icons";
+import {isBlank} from "../../../shared/utility";
 
 const { Option } = Select;
 
@@ -292,7 +293,7 @@ const Medication = ({ onClose, encId }) => {
                 <Col md={12} lg={12} className="nopadding">
                     <Card>
                         <CardBody>
-                            <Form form={form} name="appointment-registration" onFinish={addMedication}
+                            <Form form={form} name="medications" onFinish={addMedication}
                                   initialValues={{"sex": "male"}}
                                   className="form">
                                 <div className="form__form-group">
@@ -308,12 +309,18 @@ const Medication = ({ onClose, encId }) => {
                                                         fetchOptions={fetchDrugs}
                                                         onChange={handleChange}
                                                         labelInValue
+                                                        optionLabelProp="label"
                                                     >
                                                         {
                                                             drugs.map((drug, index) => {
                                                                 return (
                                                                     <Option key={index} value={drug.id} label={drug.brandName}>
-                                                                        {drug.brandName}
+                                                                        <div className="search-medication-result">
+                                                                            <span className="fnt-weight-400">{drug.brandName}</span>
+                                                                            { !isBlank(drug.content) ?
+                                                                                <span className="fnt10 light-gray-italic">({drug.content})</span>
+                                                                                : '' }
+                                                                        </div>
                                                                     </Option>
                                                                 );
                                                             })
@@ -330,13 +337,14 @@ const Medication = ({ onClose, encId }) => {
                                                         showSearch
                                                         placeholder="Select Frequency"
                                                         optionFilterProp="children"
+                                                        optionLabelProp="label"
                                                         filterOption={(input, option) => option.children.replaceAll('-', '').toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                                     >
                                                         {
                                                             freqCodes.map((freqCode, index) => {
                                                                 return (
                                                                     <Option key={index} value={freqCode.id}
-                                                                            label={freqCode.code}>
+                                                                             label={freqCode.description}>
                                                                         {freqCode.code}
                                                                     </Option>
                                                                 );
