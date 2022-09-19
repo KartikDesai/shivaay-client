@@ -88,7 +88,7 @@ const patientDashboard = props => {
                                                 <div className="patient-dashboard-header-right">
                                                     <p><strong>Date:</strong></p><p> { moment(enc.starttime).format("DD/MM/YYYY") }</p>
                                                     <p className="patient-dashboard-header-right-refby"><strong>Ref. By:</strong>  </p><p className="patient-dashboard-header-right-refby">{ enc.refby }</p>
-                                                    <p><strong>Doctor:</strong>  </p><p><strong>Dr { `${enc.doctorFname} ${enc.doctorLname}` }</strong></p>
+                                                    <p><strong>Doctor:</strong>  </p><p><strong>DR. { `${enc.doctorFname} ${enc.doctorLname}` }</strong></p>
                                                     <p></p><p className="doctor-speciality">({enc.speciality})</p>
                                                 </div>
                                             </div>
