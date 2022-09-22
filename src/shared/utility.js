@@ -22,6 +22,9 @@ export const stringFormat = (str, arr) => {
 }
 
 export const getTabletCount = (duration, freqCode) => {
+    if (freqCode === "SOS") {
+        return 1 * duration;
+    }
     let splittedFreqCode = freqCode.split("-");
     let oneDayRequirement = splittedFreqCode.reduce((a, b) => isNumeric(b)? Number(a) + Number(b) : Number(a) , 0);
     return isNumeric(duration) ? Math.ceil( oneDayRequirement * duration ) : -1 ;
