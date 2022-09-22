@@ -121,6 +121,10 @@ export const GujWords = {
     'saturday-only-before-food': 'ફક્ત શનિવારે જમ્યા પહેલા',
     'sunday-only-after-food': 'ફક્ત રવિવારે જમ્યા પહેલા',
     'sunday-only-before-food': 'ફક્ત રવિવારે જમ્યા પહેલા',
+    'gargle': 'દિવસમાં ત્રણથી ચાર વાર કોગળા કરવા.',
+    'mouthwash': 'દિવસમાં ત્રણથી ચાર વાર કોગળા કરવા.',
+    'syrup-solution-2': 'દિવસમાં બે વાર લેવું.',
+    'syrup-solution-3': 'દિવસમાં ત્રણ વાર લેવું.'
 
 },
   "followUp" : "{} દિવસ પછી ફરી બતાવવા આવવું.",
