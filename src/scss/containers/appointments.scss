@@ -1,0 +1,12 @@
+.app-button {
+  width: 132px;
+}
+.appointment-filters {
+  display: grid;
+  grid-template-columns: 89% 11%;
+  margin-bottom: 15px;
+
+  & .ant-row {
+    margin-bottom: 0!important;
+  }
+}

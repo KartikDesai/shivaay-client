@@ -33,6 +33,7 @@ function DSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
             notFoundContent={fetching ? <Spin size="small" /> : null}
             {...props}
             options={options}
+            ref={props.inputRef}
 
         />
     );

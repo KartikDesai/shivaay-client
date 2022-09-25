@@ -87,7 +87,7 @@ const patientDashboard = props => {
                                                 </div>
                                                 <div className="patient-dashboard-header-right">
                                                     <p><strong>DATE:</strong></p><p> { moment(enc.starttime).format("DD/MM/YYYY") }</p>
-                                                    <p className="patient-dashboard-header-right-refby"><strong>Ref. By:</strong>  </p><p className="patient-dashboard-header-right-refby">{ enc.refby }</p>
+                                                    {enc.refby && <><p className="patient-dashboard-header-right-refby"><strong>Ref. By:</strong> </p><p className="patient-dashboard-header-right-refby">{enc.refby}</p></>}
                                                     <p><strong>DOCTOR:</strong>  </p><p><strong>DR. { `${enc.doctorFname} ${enc.doctorLname}` }</strong></p>
                                                     <p></p><p className="doctor-speciality">({enc.speciality})</p>
                                                 </div>

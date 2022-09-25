@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Progress, Table} from 'antd';
+import {DatePicker, Progress, Table} from 'antd';
 import {Button, Col, Container, Modal, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
 import classnames from "classnames";
 import AppointmentAndRegistration from "../../Lookups/appointmentAndRegistration";
@@ -8,9 +8,10 @@ import axios from "../../../shared/axiosConfig";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../shared/components/withErrorHandler";
 import {Link} from "react-router-dom";
-import {CircularProgress} from "@material-ui/core";
 import {InfoCircleOutlined} from "@ant-design/icons";
-import TrashButton from "../../../shared/components/form/TrashButton";
+import Form from "antd/es/form";
+import moment from "moment";
+import {isBlank} from "../../../shared/utility";
 
 const appointments = props => {
     const [modal, setModal] = useState(false);
@@ -24,6 +25,8 @@ const appointments = props => {
     const {currentTab} = props.match.params;
     const tabs = ['my', 'all', 'past'];
     const [currentEncId, setCurrentEncId] = useState();
+    const [appointmentFilters] = Form.useForm();
+
     const toggle = () => {
         setModal(prevState => !prevState);
     }
@@ -44,15 +47,15 @@ const appointments = props => {
     const columns = [
         { title: 'Name', dataIndex: 'name', key: 'name',render: (data,record) => <><Link to={`/patientDashboard/${record.patientId}/${record.encId}`}>{data}  </Link>
                 <InfoCircleOutlined style={{color: "#ff4861", marginTop: "-2px"}} onClick={() => toggleVital(record.encId)}/></>},
-        { title: 'Age', dataIndex: 'age', key: 'age' },
+        { title: 'Age(Gender)', dataIndex: 'age', key: 'age' },
         { title: 'Chief Complaint', dataIndex: 'chiefComplaint', key: 'chiefComplaint' },
-        { title: 'Address', dataIndex: 'address', key: 'address' },
-        {
+        { title: 'Doctor', dataIndex: 'doctor', key: 'doctor' },
+        /*{
             title: '',
             dataIndex: '',
             key: 'x',
             render: () => <TrashButton />,
-        }
+        }*/
     ];
     useEffect(() => {
         // TODO: check performance of number of calling
@@ -75,7 +78,12 @@ const appointments = props => {
     }
 
     const getEncounters = async (tab) => {
-        const res = await axios.get(`/getEncs/${tab}/${props.user.userInfo.id}`);
+        let selectedDateMoment = appointmentFilters.getFieldValue("selectedDate");
+        let selectedDate = selectedDateMoment && selectedDateMoment.isValid() ? moment(selectedDateMoment).format("DD-MM-YYYY") : moment(new Date()).format("DD-MM-YYYY");
+        console.log(selectedDate);
+        const res = await axios.post(`/getEncs/${tab}/${props.user.userInfo.id}`, {
+            selectedDate: selectedDate
+        });
         if (res) { setEncs(res.data); }
     }
 
@@ -130,7 +138,6 @@ const appointments = props => {
 
     return (
         <>
-
             <div className="tabs tabs--justify tabs--bordered-top">
                 <div className="tabs__wrap">
                     <div className="col-sm-12">
@@ -165,19 +172,16 @@ const appointments = props => {
                                     <Col md={12} lg={12} sm={12} >
                                         <Table
                                             columns={columns}
-                                            expandable={{
-                                                expandedRowRender: record => <p style={{ margin: 0 }}>{record.chiefComplaint}</p>,
-
-                                            }}
                                             dataSource={encs.map((enc, i) => (
                                                 {
                                                     key: i,
-                                                    name: `${enc.fname} ${enc.lname}`,
-                                                    age: enc.age,
+                                                    name: enc.patientName,
+                                                    age: `${enc.age}${enc.sex}`,
                                                     address: enc.address1,
                                                     chiefComplaint: enc.chiefComplaint,
                                                     patientId: enc.patientId,
-                                                    encId: enc.encId
+                                                    encId: enc.encId,
+                                                    doctor: enc.doctorName
                                                 }
                                             ))}
                                         />
@@ -188,8 +192,20 @@ const appointments = props => {
                         <TabPane tabId='all' className="p-3">
                             <Container>
                                 <Row>
-                                    <Col md={12} lg={12} sm={12} className="flex flex-row-reverse mb-4">
-                                        <Button color="primary" onClick={toggle}>Add Appointment</Button>
+
+                                    <Col md={12} lg={12} sm={12}>
+                                        <div className="appointment-filters">
+                                            <Form form={appointmentFilters} name="appointmentFilters">
+                                                <Form.Item name="selectedDate">
+                                                    <DatePicker
+                                                        onChange={() => getEncounters(activeTab)}
+                                                        allowClear={false}
+                                                        format="DD-MM-YYYY"
+                                                        defaultValue={moment(new Date(), 'DD-MM-YYYY')}/>
+                                                </Form.Item>
+                                            </Form>
+                                            <button className="btn btn-xs btn-primary app-button"  onClick={toggle}>Add Appointment</button>
+                                        </div>
                                     </Col>
                                     <Col md={12} lg={12} sm={12}>
                                         <Table
@@ -197,12 +213,13 @@ const appointments = props => {
                                             dataSource={encs.map((enc, i) => (
                                                 {
                                                     key: i,
-                                                    name: `${enc.fname} ${enc.lname}`,
-                                                    age: enc.age,
+                                                    name: enc.patientName,
+                                                    age: `${enc.age}${enc.sex}`,
                                                     address: enc.address1,
                                                     chiefComplaint: enc.chiefComplaint,
                                                     patientId: enc.patientId,
-                                                    encId: enc.encId
+                                                    encId: enc.encId,
+                                                    doctor: enc.doctorName
                                                 }
                                             ))}
                                         />
@@ -214,17 +231,32 @@ const appointments = props => {
                             <Container>
                                 <Row>
                                     <Col md={12} lg={12} sm={12}>
+                                        <div className="appointment-filters">
+                                            <Form form={appointmentFilters} name="appointmentFilters">
+                                                <Form.Item name="selectedDate">
+                                                    <DatePicker
+                                                        onChange={() => getEncounters(activeTab)}
+                                                        allowClear={false}
+                                                        format="DD-MM-YYYY"
+                                                        defaultValue={moment(new Date(), 'DD-MM-YYYY')}/>
+                                                </Form.Item>
+                                            </Form>
+                                            <button className="btn btn-xs btn-primary app-button"  onClick={toggle}>Add Appointment</button>
+                                        </div>
+                                    </Col>
+                                    <Col md={12} lg={12} sm={12}>
                                         <Table
                                             columns={columns}
                                             dataSource={encs.map((enc, i) => (
                                                 {
                                                     key: i,
-                                                    name: `${enc.fname} ${enc.lname}`,
-                                                    age: enc.age,
+                                                    name: enc.patientName,
+                                                    age: `${enc.age}${enc.sex}`,
                                                     address: enc.address1,
                                                     chiefComplaint: enc.chiefComplaint,
                                                     patientId: enc.patientId,
-                                                    encId: enc.encId
+                                                    encId: enc.encId,
+                                                    doctor: enc.doctorName
                                                 }
                                             ))}
                                         />
@@ -235,7 +267,6 @@ const appointments = props => {
                     </TabContent>
                 </div>
             </div>
-
             <Modal
                 backdrop="static"
                 keyboard={false}                

@@ -67,7 +67,7 @@ const Remarks = ({ onClose, encId }) => {
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Remarks</th>
+                    <th>Advices</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -99,7 +99,7 @@ const Remarks = ({ onClose, encId }) => {
             toggle={toggleModelRemarks}
             className={modelRemarksClasses}
         >
-            <ModalHeader>Add Remarks</ModalHeader>
+            <ModalHeader>Add Advice</ModalHeader>
             <ModalBody>
                 <Col md={12} lg={12} className="nopadding">
                     <Card>
@@ -108,7 +108,7 @@ const Remarks = ({ onClose, encId }) => {
                                 <div className="form__form-group">
                                     <Row>
                                         <Col md={10} lg={10}>
-                                            <span className="form__form-group-label">Remarks</span>
+                                            <span className="form__form-group-label">Advice</span>
                                             <div className="form__form-group-field">
                                                 <Form.Item name="remark">
                                                     <TextArea showCount maxLength={255} />

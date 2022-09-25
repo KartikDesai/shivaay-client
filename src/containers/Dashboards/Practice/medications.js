@@ -10,6 +10,7 @@ import DSelect from "../../../shared/components/form/DSelect";
 import notify from "../../../shared/components/notification/notification";
 import {EnterOutlined} from "@ant-design/icons";
 import {isBlank} from "../../../shared/utility";
+import useFocus from "../../../shared/hooks/use-focus-hook";
 
 const { Option } = Select;
 
@@ -21,7 +22,7 @@ const Medication = ({ onClose, encId }) => {
     const [addingDrug, setAddingDrug] = useState(false);
     const [savingMedications, setSavingMedications] = useState(false);
     const [medications, setMedications] = useState([]);
-    // const [brandNameRef, setBrandNameFocus] = useFocus()
+    const [brandNameRef, setBrandNameFocus] = useFocus()
     const [form] = Form.useForm();
 
     const okRef = useRef(null)
@@ -45,7 +46,7 @@ const Medication = ({ onClose, encId }) => {
                     'freqCodeId': medication.freqCodeId,
                     'duration': medication.duration,
                     'deleted': medication.deleted || false,
-                    displayOrder: 0
+                    'displayOrder': medication.displayOrder || 0
                 })
             }
             if (!medication.children) {
@@ -60,7 +61,7 @@ const Medication = ({ onClose, encId }) => {
                         'freqCodeId': childMedication.freqCodeId,
                         'duration': childMedication.duration,
                         'deleted': childMedication.deleted,
-                        displayOrder: childMedication.displayOrder
+                        'displayOrder': childMedication.displayOrder
                     });
                 }
             }
@@ -222,12 +223,13 @@ const Medication = ({ onClose, encId }) => {
                 freqCode: freqCode.code,
                 freqCodeId: medication.freqCodeId,
                 duration: medication.duration,
+                displayOrder: medications.length + 1,
                 medId: 0 // For newly added medication,
             }));
         }
 
         onReset();
-        // setBrandNameFocus();
+        setBrandNameFocus();
     }
 
     let medicationTable = "";
@@ -310,6 +312,7 @@ const Medication = ({ onClose, encId }) => {
                                                         onChange={handleChange}
                                                         labelInValue
                                                         optionLabelProp="label"
+                                                        inputRef={brandNameRef}
                                                     >
                                                         {
                                                             drugs.map((drug, index) => {

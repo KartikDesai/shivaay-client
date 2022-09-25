@@ -36,7 +36,7 @@
   }
   & .patient-dashboard-header-profile {
     display: grid;
-    grid-template-columns: 85% 15%;
+    grid-template-columns: 80% 20%;
   }
   & .patient-dashboard-header-right {
     display: grid;
@@ -55,6 +55,11 @@
     color: $color-blue-dark;
     text-transform: uppercase;
   }
+  & .section-header {
+    & span {
+      cursor: pointer;
+    }
+  }
 }
 
 @media print {
@@ -68,7 +73,7 @@
       padding-left: 10px!important;
     }
     & .profile__card {
-      margin-top: 180px;
+      margin-top: 195px;
     }
     & .patient-detail-matrix {
       display: flex;

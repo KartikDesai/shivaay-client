@@ -10,10 +10,9 @@ import Vitals from "./vitals";
 import {GujWords} from "../../../translations/resources";
 import {connect} from "react-redux";
 import VitalsTable from './vitalsTable'
-import {getTabletCount, stringFormat, isBlank} from "../../../shared/utility";
+import {getTabletCount, stringFormat, isBlank, isNumeric, getFreqCodeLabel} from "../../../shared/utility";
 
 const dashboardTabs = ({ encId, user, patientId }) => {
-    const [followUp, setFollowUp] = useState(0);
     const [followupDays,setFollowupDays] = useState(0   );
 
     const [activeTab, setActiveTab] = useState(1);
@@ -80,29 +79,28 @@ const dashboardTabs = ({ encId, user, patientId }) => {
     }, [user]);
 
 
-    const onFollowupBlur = async() =>{
-        let days = form.getFieldValue("days");
-        if(days >= 0){
-            const res = await axios.post('saveAdvice', { encId: encId, followupAfter : days });
-            if (res && res.data) {
-                setFollowupDays(days);
-            }
-            else {
-                setFollowupDays(0);
-            }
-        }
-        else{
-            setFollowupDays(0);
-        }
-        setFollowUp(false);
-
+    const onFollowupBlur = () =>{
+        saveFollowupDays(form.getFieldValue("days"))
     }
-    const getFollowupDaysByEncId = async (encId) => {
 
+    const saveFollowupDays = async (days) => {
+        if(!isNumeric(days) || days <= 0){
+            updateFollowupDayInInput(0);
+        }
+        const res = await axios.post('saveAdvice', { encId: encId, followupAfter : days });
+        if (res && res.data) {
+            updateFollowupDayInInput(days);
+        }
+    }
+    const updateFollowupDayInInput = days => {
+        setFollowupDays(days);
+        form.setFieldsValue({"days": days});
+    };
+
+    const getFollowupDaysByEncId = async (encId) => {
         const res = await axios.get(`/getAdvice/${encId}` );
-        if (res) {
-            console.log('res data ' + res.data);
-            setFollowupDays(res.data);
+        if (res && res.data) {
+            updateFollowupDayInInput(res.data)
         }
     }
 
@@ -252,12 +250,13 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                                             <div className="gj-fnt-14">
                                                                 { `${GujWords['freqCodes'][medication.freqCode]} `}
                                                                 { medication.freqCode !== "SOS" ? `${ medication.duration } ${GujWords['days']}`: ''}
-                                                                <span className="freqCodes">
-                                                                    { medication.freqCode !== "SOS" ? `(${medication.freqCode.substring(0, medication.freqCode.length - 2)})` : '' }
-                                                                </span>
+                                                                <>
+                                                                    <span className="freqCodes"
+                                                                          dangerouslySetInnerHTML={{ __html:  medication.freqCode !== "SOS" ? `${ getFreqCodeLabel(medication.freqCode)}` : ''  }} />
+                                                                </>
                                                             </div>
                                                             <div className="text-right">
-                                                                { medication.freqCode !== "SOS" ? `(${ getTabletCount(medication.duration, medication.freqCode) })` : "" }
+                                                                { `(${ getTabletCount(medication.duration, medication.freqCode) })` }
                                                             </div>
                                                         </div>
 
@@ -270,10 +269,13 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                                                         { childMedication.freqCode !== "SOS" ? `${GujWords['afterthat']}`: ''}
                                                                         {` ${GujWords['freqCodes'][childMedication.freqCode]} `}
                                                                         { childMedication.freqCode !== "SOS" ? `${ childMedication.duration } ${GujWords['days']}`: ''}
-                                                                        <span className="freqCodes">{ childMedication.freqCode !== "SOS" ? `(${ childMedication.freqCode.substring(0, childMedication.freqCode.length - 2) })` : '' } </span>
+                                                                        <>
+                                                                            <span className="freqCodes"
+                                                                            dangerouslySetInnerHTML={{ __html:  childMedication.freqCode !== "SOS" ? `${ getFreqCodeLabel(childMedication.freqCode)}` : ''  }} />
+                                                                        </>
                                                                     </div>
                                                                     <div className="text-right">
-                                                                        { childMedication.freqCode !== "SOS" ? `(${ getTabletCount(childMedication.duration, childMedication.freqCode) })` : "" }
+                                                                        { `(${ getTabletCount(childMedication.duration, childMedication.freqCode) })` }
                                                                     </div>
                                                                 </div>
                                                             )
@@ -337,22 +339,18 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                 <div className="col-sm-12">
                                     <div className="col-sm-12 nopadleft advice-followup">
                                             <div>Follow up after:</div>
-                                            {followUp ?
-                                                <div>
-                                                    <Form form={form} name="folloup" onBlur={onFollowupBlur}  >
-                                                        <Form.Item name="days"
-                                                                rules={[ {
-                                                                        pattern: /^(?:\d*)$/,
-                                                                        message: "Value should contain just positive number",
-                                                                    }
-                                                                ]}>
-                                                            <Input maxLength="2" />
-                                                            </Form.Item>
-                                                        </Form>
-                                                </div>
-                                                    : <label onClick={() => setFollowUp(true)} > {followupDays > 0 ? `${followupDays} Days` : 'N/A'} </label>
-                                            }
-                                            {/*<div><label className="pl-1"> </label></div>*/}
+                                            <div>
+                                                <Form form={form} name="folloup" onBlur={onFollowupBlur}  >
+                                                    <Form.Item name="days"
+                                                            rules={[ {
+                                                                    pattern: /^(?:\d*)$/,
+                                                                    message: "Value should contain just positive number",
+                                                                }
+                                                            ]}>
+                                                        <Input maxLength="2" />
+                                                        </Form.Item>
+                                                    </Form>
+                                            </div>
                                     </div>
                                     <div className={followupClasses.join(' ')}>
                                         {` ${stringFormat(GujWords['followUp'], [followupDays])}` }
