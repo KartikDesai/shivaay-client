@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {DatePicker, Progress, Table} from 'antd';
-import {Button, Col, Container, Modal, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
+import {DatePicker, Table} from 'antd';
+import { Col, Container, Modal, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
 import classnames from "classnames";
 import AppointmentAndRegistration from "../../Lookups/appointmentAndRegistration";
 import AddVitals from "../../Lookups/addVitals";
@@ -11,7 +11,7 @@ import {Link} from "react-router-dom";
 import {InfoCircleOutlined} from "@ant-design/icons";
 import Form from "antd/es/form";
 import moment from "moment";
-import {isBlank} from "../../../shared/utility";
+import TrashButton from "../../../shared/components/form/TrashButton";
 
 const appointments = props => {
     const [modal, setModal] = useState(false);

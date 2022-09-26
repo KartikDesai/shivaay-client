@@ -48,17 +48,17 @@ const dashboardTabs = ({ encId, user, patientId }) => {
             setChiefComplaints(res.data);
         }
     }
-    const getRemarks = async (encId) => {
+    /*const getRemarks = async (encId) => {
         const res = await axios.get(`/getRemarks/${encId}` );
         if (res) {
             setRemarks(res.data);
         }
-    }
+    }*/
 
     useEffect(() => {
         getMedications(encId);
         getChiefComplaints(encId);
-        getRemarks(encId);
+       //getRemarks(encId);
     }, [value])
 
     const toggle = (tab) => {
@@ -252,7 +252,7 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                                                 { medication.freqCode !== "SOS" ? `${ medication.duration } ${GujWords['days']}`: ''}
                                                                 <>
                                                                     <span className="freqCodes"
-                                                                          dangerouslySetInnerHTML={{ __html:  medication.freqCode !== "SOS" ? `${ getFreqCodeLabel(medication.freqCode)}` : ''  }} />
+                                                                          dangerouslySetInnerHTML={{ __html:  medication.freqCode !== "SOS" ? `${getFreqCodeLabel(medication.freqCode)}` : ''  }} />
                                                                 </>
                                                             </div>
                                                             <div className="text-right">
@@ -315,7 +315,7 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                                 :<span>Advice</span> }
                                             </strong></div>
                                         </div>
-                                        <div className="col-sm-12 nopadding ml-2">
+                                        {/*<div className="col-sm-12 nopadding ml-2">
                                             <ul>
                                             { remarks && remarks.length > 0 ? remarks.map((remark, i) => {
                                                 return (
@@ -330,7 +330,7 @@ const dashboardTabs = ({ encId, user, patientId }) => {
                                                 )
                                             }): ''}
                                             </ul>
-                                        </div>
+                                        </div>*/}
                                     </div>
                                     { remarksModel && <Remarks onClose={closeModalRemarks} onSubmit={onSubmit} encId={ encId }/> }
                                 </List.Item>

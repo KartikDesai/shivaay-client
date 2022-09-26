@@ -76,7 +76,7 @@ const patientDashboard = props => {
                                         <div className="profile__data">
                                             <div className="patient-dashboard-header-profile">
                                                 <div className="patient-dashboard-header-left">
-                                                    <p className="patient__name">{ `${enc.fname} ${enc.lname}`} { `${ enc.age }Y, `}{ enc.sex === "M" ? "M": "F" }</p>
+                                                    <p className="patient__name">{ `${enc.fname} ${enc.lname}`} { `(${ enc.age }Y, `}{ enc.sex === "M" ? "M": "F" } {')'}</p>
                                                     <p className="patient-dashboard-header-left-id bold-text">{  `ID: ${enc.patientUuid}` }</p>
                                                     <div className="patient-headset">
                                                         <span className="lnr lnr-phone-handset" style={{marginTop: '2px', float: 'left', paddingRight: '3px'}}></span><p className="profile__work"> { enc.phone }</p>

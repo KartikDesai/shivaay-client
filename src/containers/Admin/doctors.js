@@ -26,6 +26,7 @@ const doctors = (props)=> {
         {title: 'Action',dataIndex: '',key: 'id',render: (record) =>
                 <button className="lnr lnr-user" onClick = {() => del (record.id)}>Delete</button>
         },
+
     ];
     const del = (id)=>{
         deleteDoctor(id);
