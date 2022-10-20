@@ -39,7 +39,6 @@ export const isNumeric = (str) => {
 
 /* string is blank, null or undefined */
 export const isBlank = (str) => {
-    console.log(str);
     return (!str || /^\s*$/.test(str) || str.length === 0 || !str.trim());
 }
 
